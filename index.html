@@ -14,7 +14,7 @@
         body {
             min-height: 100vh;
             display: flex;
-            align-items: flex-start; /* 改为顶部对齐，解决手机端留白过大 */
+            align-items: center; /* 确保电脑端和手机端完美垂直居中 */
             justify-content: center;
             background-color: #f5efe6;
             background-image: radial-gradient(ellipse at 50% 50%, #fdfaf5 0%, #f5efe6 60%, #ede3d3 100%);
@@ -22,7 +22,7 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
-            padding-top: 8vh; /* 给顶部留一点点距离即可 */
+            padding: 20px; /* 四周留一点边距更美观 */
         }
         .scene {
             display: flex;
@@ -67,7 +67,6 @@
             box-shadow: 0 8px 28px rgba(0,0,0,0.14);
             z-index: 3;
         }
-        /* 信封中间那句“致·亲爱的爸爸” */
         .envelope-body::after {
             content: '致·亲爱的爸爸';
             position: absolute;
@@ -137,7 +136,7 @@
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* 纯CSS绘制的信纸（去掉外部依赖） */
+        /* 纯CSS绘制的信纸 */
         .card {
             background: #fefcf8;
             border: 10px solid transparent;
@@ -215,11 +214,11 @@
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
         .hint.hidden { visibility: hidden; }
 
-        /* 手机端适配（解决留白、布局问题） */
+        /* 手机端适配 */
         @media (max-width: 500px) {
-            body { padding-top: 5vh; align-items: flex-start; }
-            .envelope-wrapper { width: 88vw; height: 220px; margin-top: 4vh; }
-            .card-wrapper { width: 94vw; margin-top: 2vh; }
+            body { padding: 10px; align-items: center; }
+            .envelope-wrapper { width: 90vw; height: 220px; margin-top: 0; }
+            .card-wrapper { width: 95vw; margin-top: 0; }
             .card-blessing { padding: 24px 16px 8px; }
             .card-blessing .title { font-size: 1.8rem; }
             .card-blessing .greeting { font-size: 0.85rem; line-height: 1.8; }
@@ -265,9 +264,9 @@
 
                 <div class="divider"></div>
 
-                <!-- 歌词单行显示 -->
+                <!-- 歌词单行显示区域 -->
                 <div class="card-lyrics" id="lyricsBox">
-                    <div class="lyric-current" id="lyricCurrent">— ♪ 生日感恩暖阳 ♪ —</div>
+                    <div class="lyric-current" id="lyricCurrent">生日感恩暖阳</div>
                 </div>
 
                 <!-- 音频控制 -->
@@ -287,22 +286,9 @@
 
     <script>
         (function() {
-            const MUSIC_FILE = 'father-song.mp3';
-            const envelopeWrapper = document.getElementById('envelopeWrapper');
-            const cardWrapper = document.getElementById('cardWrapper');
-            const hintText = document.getElementById('hintText');
-            const bgAudio = document.getElementById('bgAudio');
-            const audioBtn = document.getElementById('audioBtn');
-            const progressFill = document.getElementById('progressFill');
-            const lyricCurrent = document.getElementById('lyricCurrent');
-            const dateDisplay = document.getElementById('dateDisplay');
-
-            const now = new Date();
-            dateDisplay.textContent = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
-
-            // 歌词数据
+            // ========== 歌词数据（已按照你给的 LRC 时间精确匹配） ==========
             const lyricsData = [
-                { time: 0, text: '— ♪ 生日感恩暖阳 ♪ —' },
+                { time: 0, text: '生日感恩暖阳' },
                 { time: 4.2, text: '晨光爬过粥锅沿' },
                 { time: 7.5, text: '您擦胡茬笑眼弯' },
                 { time: 10.8, text: '公文包挂门把边' },
@@ -323,8 +309,20 @@
                 { time: 65.6, text: '时光慢些 留住您的容颜' },
                 { time: 69.2, text: '从前您撑天地 如今我来分担' },
                 { time: 72.8, text: '岁岁生辰 暖意永不消散' },
-                { time: 160, text: '— ♪ 尾奏 ♪ —' }
+                { time: 160, text: '（尾奏）' }
             ];
+
+            const envelopeWrapper = document.getElementById('envelopeWrapper');
+            const cardWrapper = document.getElementById('cardWrapper');
+            const hintText = document.getElementById('hintText');
+            const bgAudio = document.getElementById('bgAudio');
+            const audioBtn = document.getElementById('audioBtn');
+            const progressFill = document.getElementById('progressFill');
+            const lyricCurrent = document.getElementById('lyricCurrent');
+            const dateDisplay = document.getElementById('dateDisplay');
+
+            const now = new Date();
+            dateDisplay.textContent = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
 
             let isOpen = false, isAnimating = false, isAudioReady = false;
             let musicTriggered = false, isLyricTransitioning = false, currentLyricIdx = -1;
@@ -335,8 +333,7 @@
 
             function tryPlayMusic() {
                 if (musicTriggered || !bgAudio.src) return;
-                console.log('���� 尝试播放音乐...');
-                // 移除重置 currentTime 的逻辑，防止导致断音
+                console.log('🎵 尝试播放音乐...');
                 const playPromise = bgAudio.play();
                 if (playPromise !== undefined) {
                     playPromise.then(() => {
@@ -344,7 +341,7 @@
                         console.log('▶️ 播放成功');
                         updateAudioBtn(true);
                     }).catch(err => { 
-                        console.warn('⚠️ 播放被拦截，用户需要手动点击:', err.message); 
+                        console.warn('⚠️ 播放被拦截，用户可手动点击:', err.message); 
                     });
                 }
             }
@@ -392,7 +389,7 @@
 
             function resetLyrics() {
                 currentLyricIdx = -1;
-                lyricCurrent.textContent = '— ♪ 生日感恩暖阳 ♪ —';
+                lyricCurrent.textContent = '生日感恩暖阳';
                 lyricCurrent.classList.remove('fade-out');
                 progressFill.style.width = '0%';
                 isLyricTransitioning = false;
@@ -423,7 +420,7 @@
                 setTimeout(() => { isAnimating = false; }, 500);
             }
 
-            // 手动切换音频
+            // 手动切换音频（手机必备用）
             function toggleAudio() {
                 if (!isAudioReady || !bgAudio.src) return;
                 if (bgAudio.paused) {
