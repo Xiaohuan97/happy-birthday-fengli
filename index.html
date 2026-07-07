@@ -17,9 +17,41 @@
             user-select: none;
             padding: 20px;
         }
+
+        /* ==================== 缓缓下落的小蛋糕背景 ==================== */
+        .cake-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; pointer-events: none; /* 绝对不要挡住点击 */
+            z-index: 0;
+        }
+        .cake-bg span {
+            position: absolute;
+            display: block; font-size: 1.2rem;
+            animation: cakeFall 12s linear infinite;
+            bottom: -10%;
+            opacity: 0.35; /* 调低透明度，不喧宾夺主 */
+            color: #dcaa63;
+        }
+        /* 随机大小和位置偏移 */
+        .cake-bg span:nth-child(1) { left: 10%; font-size: 0.8rem; animation-delay: 0s; animation-duration: 13s; }
+        .cake-bg span:nth-child(2) { left: 25%; font-size: 1.4rem; animation-delay: 3s; animation-duration: 10s; }
+        .cake-bg span:nth-child(3) { left: 40%; font-size: 1rem; animation-delay: 6s; animation-duration: 15s; }
+        .cake-bg span:nth-child(4) { left: 60%; font-size: 1.6rem; animation-delay: 1s; animation-duration: 11s; }
+        .cake-bg span:nth-child(5) { left: 75%; font-size: 0.9rem; animation-delay: 4s; animation-duration: 14s; }
+        .cake-bg span:nth-child(6) { left: 90%; font-size: 1.3rem; animation-delay: 7s; animation-duration: 12s; }
+        .cake-bg span:nth-child(7) { left: 5%; font-size: 1.5rem; animation-delay: 9s; animation-duration: 16s; }
+        .cake-bg span:nth-child(8) { left: 50%; font-size: 0.7rem; animation-delay: 2s; animation-duration: 9s; }
+
+        @keyframes cakeFall {
+            0% { transform: translateY(-20vh) rotate(0deg); opacity: 0.2; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0.3; }
+        }
+
         .scene {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             width: 100%; padding: 20px 10px; min-height: 100vh;
+            position: relative; z-index: 1; /* 放在蛋糕层之上 */
         }
 
         /* ==================== 信封 ==================== */
@@ -31,7 +63,6 @@
         @keyframes gentleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .envelope-wrapper:hover { animation-play-state: paused; }
         
-        /* 物理隐藏：彻底消除上方留空的根源 */
         .envelope-wrapper.envelope-hidden {
             display: none !important; 
         }
@@ -56,8 +87,6 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.08); cursor: pointer;
             backface-visibility: hidden;
         }
-        
-        /* ⚠️ 已删除：防止“生日快乐”字样因边缘渲染导致缺失，现已彻底移除 */
 
         .envelope-wrapper.flap-open .envelope-flap {
             transform: rotateX(-180deg); z-index: 0; box-shadow: 0 6px 18px rgba(0,0,0,0.15);
@@ -93,11 +122,9 @@
         .card-blessing .greeting .red { color: #c0392b; font-weight: 600; }
         .card-blessing .signature { margin-top: 16px; font-size: 1.1rem; color: #5a4a3a; text-align: right; }
 
-        /* 分隔音符 */
         .divider { width: 55%; margin: 8px auto 6px; height: 1px; background: linear-gradient(90deg, transparent, rgba(180,140,100,0.45), transparent); position: relative; }
         .divider::after { content: '♪'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fefcf8; padding: 0 14px; color: #b8862d; font-size: 0.8rem; }
 
-        /* ==================== 纯净音乐控制区 ==================== */
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 0 18px; position: relative; z-index: 2; margin: 0 12px; }
         .audio-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid rgba(180,150,120,0.5); background: #fff; cursor: pointer; font-size: 0.7rem; color: #5a4a3a; transition: all 0.3s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .audio-btn.playing { background: #c0392b; color: #fff; border-color: #c0392b; }
@@ -121,6 +148,18 @@
     </style>
 </head>
 <body>
+    <!-- 小蛋糕背景层 -->
+    <div class="cake-bg">
+        <span>����</span>
+        <span>����</span>
+        <span>����</span>
+        <span>����</span>
+        <span>����</span>
+        <span>����</span>
+        <span>����</span>
+        <span>����</span>
+    </div>
+
     <div class="scene">
         <!-- 信封 -->
         <div class="envelope-wrapper" id="envelopeWrapper">
@@ -149,7 +188,7 @@
 
                 <div class="divider"></div>
 
-                <!-- 纯背景音乐控制区，无歌词干扰 -->
+                <!-- 纯背景音乐控制区 -->
                 <div class="audio-bar">
                     <button class="audio-btn" id="audioBtn" title="播放/暂停背景音乐">▶</button>
                     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
@@ -193,7 +232,6 @@
                 audioBtn.classList.toggle('playing', playing);
             }
 
-            // 打开信封
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
@@ -209,7 +247,6 @@
                 }, 700);
             }
 
-            // 双击关闭贺卡
             function closeCard() {
                 if (isAnimating || !isOpen) return;
                 isAnimating = true; isOpen = false; musicTriggered = false;
@@ -222,7 +259,6 @@
                 setTimeout(() => { isAnimating = false; }, 500);
             }
 
-            // 手动切换音乐
             function toggleAudio() {
                 if (!isAudioReady || !bgAudio.src) return;
                 if (bgAudio.paused) {
