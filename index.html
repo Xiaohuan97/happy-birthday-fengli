@@ -50,7 +50,7 @@
             font-weight: bold; letter-spacing: 0.08em; opacity: 0.8;
         }
 
-        /* 信封盖 - 修复了边缘白块问题 */
+        /* 信封盖 */
         .envelope-flap {
             position: absolute; top: 0; left: 0; width: 100%; height: 49%;
             background: linear-gradient(180deg, #f3e6d2 0%, #e8d5b5 15%, #dfcaa6 40%, #d9c29d 65%, #dcc7a4 100%);
@@ -59,7 +59,6 @@
             transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1);
             box-shadow: 0 2px 6px rgba(0,0,0,0.08); cursor: pointer;
         }
-        /* 邮票 */
         .envelope-flap::before {
             content: '生日快乐'; position: absolute; top: 18px; right: 18px;
             border: 1.5px dashed #c0392b; padding: 3px 5px; font-size: 0.7rem; 
@@ -70,7 +69,6 @@
             transform: rotateX(-180deg); z-index: 0; box-shadow: 0 6px 18px rgba(0,0,0,0.15);
         }
 
-        /* 印章 */
         .seal {
             position: absolute; top: 56%; left: 50%;
             transform: translate(-50%, -50%); width: 34px; height: 34px;
@@ -94,7 +92,6 @@
             overflow: hidden; display: flex; flex-direction: column; position: relative;
         }
 
-        /* 祝福内容 */
         .card-blessing { padding: 32px 22px 12px; text-align: center; position: relative; z-index: 2; }
         .card-blessing .title { font-size: 2.2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin: 4px 0; }
         .card-blessing .subtitle { font-size: 0.9rem; color: #b8862d; letter-spacing: 0.1em; margin-bottom: 16px; }
@@ -103,42 +100,30 @@
         .card-blessing .signature { margin-top: 16px; font-size: 1.1rem; color: #5a4a3a; text-align: right; }
         .card-blessing .date { font-size: 0.7rem; color: #7a6a55; text-align: right; margin-top: 2px; }
 
-        /* 分隔线 */
         .divider { width: 55%; margin: 0 auto; height: 1px; background: linear-gradient(90deg, transparent, rgba(180,140,100,0.45), transparent); position: relative; margin-top: 4px; }
         .divider::after { content: '♪'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fefcf8; padding: 0 14px; color: #b8862d; font-size: 0.8rem; }
 
-        /* ==================== KTV 3行歌词显示模式 ==================== */
+        /* ==================== KTV 3行歌词 ==================== */
         .card-lyrics {
-            position: relative; z-index: 2; min-height: 100px; /* 三行歌词的高度 */
+            position: relative; z-index: 2; min-height: 100px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             margin: 8px 12px; border-radius: 8px; padding: 8px 10px;
-            background: rgba(255,255,255,0.6); /* 稍微透点底 */
+            background: rgba(255,255,255,0.6);
         }
-        .lyric-line {
-            text-align: center; width: 100%; transition: all 0.4s ease;
-            font-weight: 500; padding: 2px 0;
-        }
-        .lyric-prev, .lyric-next {
-            font-size: 0.8rem; color: #a39182; opacity: 0.5;
-        }
-        .lyric-current {
-            font-size: 1.2rem; color: #c0392b; font-weight: 700; opacity: 1;
-            padding: 6px 0; line-height: 1.4; text-shadow: 0 1px 1px rgba(255,255,255,0.5);
-        }
+        .lyric-line { text-align: center; width: 100%; transition: all 0.4s ease; font-weight: 500; padding: 2px 0; }
+        .lyric-prev, .lyric-next { font-size: 0.8rem; color: #a39182; opacity: 0.5; }
+        .lyric-current { font-size: 1.2rem; color: #c0392b; font-weight: 700; opacity: 1; padding: 6px 0; line-height: 1.4; text-shadow: 0 1px 1px rgba(255,255,255,0.5); }
 
-        /* 音频控制条 */
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 4px 0 10px; position: relative; z-index: 2; margin: 0 12px 6px; }
         .audio-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid rgba(180,150,120,0.5); background: #fff; cursor: pointer; font-size: 0.7rem; color: #5a4a3a; transition: all 0.3s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .audio-btn.playing { background: #c0392b; color: #fff; border-color: #c0392b; }
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
 
-        /* 底部提示 */
         .hint { margin-top: 20px; font-size: 0.8rem; color: rgba(140,110,80,0.55); letter-spacing: 0.06em; animation: hintPulse 2.2s infinite ease-in-out; }
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
         .hint.hidden { visibility: hidden; }
 
-        /* 手机适配 */
         @media (max-width: 500px) {
             body { padding: 10px; }
             .envelope-wrapper { width: 90vw; height: 220px; }
@@ -204,7 +189,7 @@
     <script>
         (function() {
             const MUSIC_FILE = 'father-song.mp3';
-            const LRC_FILE = 'father-song.lrc'; // 指定LRC文件名
+            const LRC_FILE = 'father-song.lrc'; 
 
             const envelopeWrapper = document.getElementById('envelopeWrapper');
             const cardWrapper = document.getElementById('cardWrapper');
@@ -220,11 +205,11 @@
             const now = new Date();
             dateDisplay.textContent = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
 
-            let lyricsData = []; // 后续会被 LRC 读取填充
+            let lyricsData = []; 
             let isOpen = false, isAnimating = false, isAudioReady = false;
             let musicTriggered = false, currentLyricIdx = -1;
 
-            // ========== 1. 读取并解析 LRC 歌词文件 ==========
+            // 1. 读取并解析 LRC 歌词文件
             async function loadLRC() {
                 try {
                     const response = await fetch(LRC_FILE);
@@ -232,71 +217,67 @@
                     const text = await response.text();
                     parseLRC(text);
                 } catch (err) {
-                    console.warn("⚠️ 没有加载到外部 LRC 文件，使用内置默认歌词");
-                    useDefaultLyrics(); // 如果找不到，回退到内置
+                    console.warn("⚠️ 没有加载到外部 LRC 文件，使用内置歌词");
+                    useDefaultLyrics(); 
                 }
             }
 
             function parseLRC(lrcText) {
                 const lines = lrcText.split('\n');
-                const pattern = /\[(\d{2}):(\d{2})\.(\d{2})\]/g; // 匹配 [00:00.00]
+                const pattern = /\[(\d{2}):(\d{2})\.(\d{2})\]/g; 
                 lyricsData = [];
                 
                 for (let line of lines) {
                     let matches = [...line.matchAll(pattern)];
                     if (matches.length > 0) {
-                        // 提取时间戳后面的歌词文本
                         let text = line.replace(pattern, '').trim();
-                        // 处理像 [00:00.00] 这种没有文字，只有空格的，跳过
                         if (!text) continue;
-                        
                         for (let match of matches) {
                             const min = parseInt(match[1]);
                             const sec = parseInt(match[2]);
                             const ms = parseInt(match[3]);
                             const time = min * 60 + sec + (ms / 100);
-                            // 如果同一句歌词有多个时间戳（比如第一句），按时间排序
                             lyricsData.push({ time, text });
                         }
                     }
                 }
-                // 按时间轴排序
                 lyricsData.sort((a, b) => a.time - b.time);
                 if(lyricsData.length > 0) {
                     lyricCurrent.textContent = lyricsData[0].text || "开始播放音乐";
-                    console.log("✅ 成功加载 LRC 歌词:", lyricsData.length, "句");
+                    console.log("✅ 成功加载外部 LRC 歌词:", lyricsData.length, "句");
                 }
             }
 
+            // 2. 内部备用歌词 (已同步为您最新优化的时间轴)
             function useDefaultLyrics() {
                 lyricsData = [
-                    { time: 0, text: '点击信封 播放音乐' },
-                    { time: 4.2, text: '晨光爬过粥锅沿' },
-                    { time: 7.5, text: '您擦胡茬笑眼弯' },
-                    { time: 10.8, text: '公文包挂门把边' },
-                    { time: 14.1, text: '喊我快趁热添饭' },
-                    { time: 17.4, text: '阳光绕着您转圈圈' },
-                    { time: 20.7, text: '笑纹里藏蜜甜' },
-                    { time: 25.3, text: '寒夜等候路灯前' },
-                    { time: 28.6, text: '肩头落满薄霜寒' },
-                    { time: 31.9, text: '奔波半生未偷闲' },
-                    { time: 35.2, text: '扛起全家四季安' },
-                    { time: 38.5, text: '今朝生辰许小心愿' },
-                    { time: 41.8, text: '岁岁常相见' },
-                    { time: 46.4, text: '感恩暖阳 是您温暖双肩' },
-                    { time: 50.1, text: '遮过风雨 护我岁岁平安' },
-                    { time: 53.7, text: '人间万般温柔 皆出自您眉眼' },
-                    { time: 57.3, text: '余生换我 伴您朝夕三餐' },
-                    { time: 62.0, text: '感恩暖阳 予我岁岁心安' },
-                    { time: 65.6, text: '时光慢些 留住您的容颜' },
-                    { time: 69.2, text: '从前您撑天地 如今我来分担' },
-                    { time: 72.8, text: '岁岁生辰 暖意永不消散' },
-                    { time: 160, text: '（尾奏）' }
+                    { time: 0.00, text: '生日感恩暖阳' },
+                    { time: 3.80, text: '晨光爬过粥锅沿' },
+                    { time: 7.10, text: '您擦胡茬笑眼弯' },
+                    { time: 10.40, text: '公文包挂门把边' },
+                    { time: 13.70, text: '喊我快趁热添饭' },
+                    { time: 17.00, text: '阳光绕着您转圈圈' },
+                    { time: 20.30, text: '笑纹里藏蜜甜' },
+                    { time: 24.80, text: '寒夜等候路灯前' },
+                    { time: 28.10, text: '肩头落满薄霜寒' },
+                    { time: 31.40, text: '奔波半生未偷闲' },
+                    { time: 34.70, text: '扛起全家四季安' },
+                    { time: 38.00, text: '今朝生辰许小心愿' },
+                    { time: 41.30, text: '岁岁常相见' },
+                    { time: 45.90, text: '感恩暖阳 是您温暖双肩' },
+                    { time: 49.50, text: '遮过风雨 护我岁岁平安' },
+                    { time: 53.10, text: '人间万般温柔 皆出自您眉眼' },
+                    { time: 56.70, text: '余生换我 伴您朝夕三餐' },
+                    { time: 61.40, text: '感恩暖阳 予我岁岁心安' },
+                    { time: 65.00, text: '时光慢些 留住您的容颜' },
+                    { time: 68.60, text: '从前您撑天地 如今我来分担' },
+                    { time: 72.20, text: '岁岁生辰 暖意永不消散' },
+                    { time: 150.00, text: '（尾奏轻音乐）' },
+                    { time: 165.00, text: '（歌曲结束）' }
                 ];
                 lyricCurrent.textContent = '点击信封 播放音乐';
             }
 
-            // 启动加载
             loadLRC();
 
             bgAudio.load();
@@ -317,16 +298,13 @@
                 audioBtn.classList.toggle('playing', playing);
             }
 
-            // ========== 2. 展示 3 行歌词 ==========
+            // 3. 展示 3 行歌词
             function updateLyricDisplay(index) {
                 if (index < 0 || index >= lyricsData.length) return;
                 
-                // 当前
                 lyricCurrent.textContent = lyricsData[index].text;
-                // 上一句
                 if (index > 0) lyricPrev.textContent = lyricsData[index-1].text;
                 else lyricPrev.textContent = '';
-                // 下一句
                 if (index < lyricsData.length - 1) lyricNext.textContent = lyricsData[index+1].text;
                 else lyricNext.textContent = '';
             }
@@ -337,7 +315,6 @@
                 for (let i = 0; i < lyricsData.length; i++) {
                     if (currentTime >= lyricsData[i].time) activeIdx = i;
                 }
-                // 如果歌词变了
                 if (activeIdx !== currentLyricIdx) {
                     currentLyricIdx = activeIdx;
                     updateLyricDisplay(activeIdx);
@@ -355,12 +332,12 @@
                 progressFill.style.width = '0%';
             }
 
-            // ========== 3. 交互与动画 ==========
+            // 4. 交互与动画
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
                 envelopeWrapper.classList.add('flap-open');
-                tryPlayMusic(); // 点开信封触发音乐
+                tryPlayMusic();
                 setTimeout(() => {
                     envelopeWrapper.classList.add('envelope-hidden');
                     cardWrapper.classList.add('visible');
