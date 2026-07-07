@@ -18,24 +18,26 @@
             padding: 20px;
         }
 
-        /* ==================== 缓缓下落的小蛋糕背景（使用小图片） ==================== */
+        /* ==================== 蛋糕背景（置顶，不挡点击） ==================== */
         .cake-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; pointer-events: none; /* 绝对不要挡住点击 */
-            z-index: 0;
+            overflow: hidden; 
+            pointer-events: none; /* 绝对关键：让点击直接穿透蛋糕，绝不挡手！ */
+            z-index: 9999; /* 绝对关键：把蛋糕放在最上层，信封和贺卡都挡不住它 */
         }
         .cake-bg span {
             position: absolute;
             display: block; 
-            width: 40px; height: 40px; /* 控制小蛋糕图标显示的大小 */
+            width: 40px; height: 40px; 
             background-size: contain; background-position: center; background-repeat: no-repeat;
             animation: cakeFall 12s linear infinite;
             bottom: -10%;
-            opacity: 0.4; /* 调低透明度，不喧宾夺主 */
+            opacity: 1; /* 调为完全不透明，让蛋糕清晰可见 */
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); /* 加上轻微的投影，更有立体感 */
         }
         
-        /* 随机大小和位置偏移，以及各自的图片 */
+        /* 随机大小、位置和各自的图片 */
         .cake-bg span:nth-child(1) { left: 10%; width: 30px; height: 30px; background-image: url('cake1.png'); animation-delay: 0s; animation-duration: 13s; }
         .cake-bg span:nth-child(2) { left: 25%; width: 50px; height: 50px; background-image: url('cake2.png'); animation-delay: 3s; animation-duration: 10s; }
         .cake-bg span:nth-child(3) { left: 40%; width: 40px; height: 40px; background-image: url('cake3.png'); animation-delay: 6s; animation-duration: 15s; }
@@ -45,15 +47,16 @@
         .cake-bg span:nth-child(7) { left: 5%; width: 50px; height: 50px; background-image: url('cake3.png'); animation-delay: 9s; animation-duration: 16s; }
         .cake-bg span:nth-child(8) { left: 50%; width: 30px; height: 30px; background-image: url('cake4.png'); animation-delay: 2s; animation-duration: 9s; }
 
+        /* 掉落动画 */
         @keyframes cakeFall {
-            0% { transform: translateY(-20vh) rotate(0deg) scale(0.8); opacity: 0.2; }
-            100% { transform: translateY(110vh) rotate(360deg) scale(1.1); opacity: 0.3; }
+            0% { transform: translateY(-20vh) rotate(0deg) scale(0.8); opacity: 0.4; }
+            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0.9; }
         }
 
         .scene {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             width: 100%; padding: 20px 10px; min-height: 100vh;
-            position: relative; z-index: 1; /* 放在蛋糕层之上 */
+            position: relative; z-index: 1; /* 贺卡和信封层级在蛋糕下方 */
         }
 
         /* ==================== 信封 ==================== */
@@ -64,10 +67,7 @@
         }
         @keyframes gentleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .envelope-wrapper:hover { animation-play-state: paused; }
-        
-        .envelope-wrapper.envelope-hidden {
-            display: none !important; 
-        }
+        .envelope-wrapper.envelope-hidden { display: none !important; }
 
         .envelope-body {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
@@ -86,10 +86,8 @@
             clip-path: polygon(0 0, 50% 100%, 100% 0);
             z-index: 6; transform-origin: top center;
             transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08); cursor: pointer;
-            backface-visibility: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08); cursor: pointer; backface-visibility: hidden;
         }
-
         .envelope-wrapper.flap-open .envelope-flap {
             transform: rotateX(-180deg); z-index: 0; box-shadow: 0 6px 18px rgba(0,0,0,0.15);
         }
@@ -150,7 +148,7 @@
     </style>
 </head>
 <body>
-    <!-- 小图片蛋糕背景层 -->
+    <!-- 小蛋糕背景层，会在最上层飘落且不挡点击 -->
     <div class="cake-bg">
         <span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
@@ -184,7 +182,7 @@
 
                 <div class="divider"></div>
 
-                <!-- 纯背景音乐控制区 -->
+                <!-- 纯净音乐控制区 -->
                 <div class="audio-bar">
                     <button class="audio-btn" id="audioBtn" title="播放/暂停背景音乐">▶</button>
                     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
