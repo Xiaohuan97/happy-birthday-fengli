@@ -33,13 +33,11 @@
             width: 40px; height: 40px; 
             top: -50px; 
             background-size: contain; background-position: center; background-repeat: no-repeat;
-            /* 关键修复：取消圆形裁切，利用透明PNG自然显示，彻底杜绝灰块Bug */
             background-color: transparent;
             animation: cakeFall 10s linear infinite;
             filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15)); 
         }
         
-        /* 随机大小、位置、速度、以及各自的图片 */
         .cake-bg span:nth-child(1) { left: 10%; width: 30px; height: 30px; background-image: url('cake1.png'); animation-delay: 0s; animation-duration: 12s; }
         .cake-bg span:nth-child(2) { left: 25%; width: 50px; height: 50px; background-image: url('cake2.png'); animation-delay: 2s; animation-duration: 9s; }
         .cake-bg span:nth-child(3) { left: 40%; width: 40px; height: 40px; background-image: url('cake3.png'); animation-delay: 4s; animation-duration: 14s; }
@@ -129,9 +127,17 @@
         .divider { width: 55%; margin: 8px auto 6px; height: 1px; background: linear-gradient(90deg, transparent, rgba(180,140,100,0.45), transparent); position: relative; }
         .divider::after { content: '♪'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fefcf8; padding: 0 14px; color: #b8862d; font-size: 0.8rem; }
 
-        .audio-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 0 18px; position: relative; z-index: 2; margin: 0 12px; }
-        .audio-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid rgba(180,150,120,0.5); background: #fff; cursor: pointer; font-size: 0.7rem; color: #5a4a3a; transition: all 0.3s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .audio-btn.playing { background: #c0392b; color: #fff; border-color: #c0392b; }
+        /* ==================== 音乐控制区（适配新按钮图片） ==================== */
+        .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 0 18px; position: relative; z-index: 2; margin: 0 12px; }
+        .audio-img-btn {
+            width: 36px; height: 36px;
+            object-fit: contain; /* 保持原图比例 */
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .audio-img-btn:active {
+            transform: scale(0.9); /* 点击时轻微缩小，模拟按压感 */
+        }
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
 
@@ -148,7 +154,7 @@
             .card-blessing .greeting { font-size: 0.85rem; line-height: 1.8; }
             .seal { width: 28px; height: 28px; }
             .envelope-body::after { font-size: 1.2rem; }
-            .audio-bar { margin-bottom: 20px; } /* 手机底部增加避让空间 */
+            .audio-bar { margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -187,9 +193,9 @@
 
                 <div class="divider"></div>
 
-                <!-- 纯净音乐控制区 -->
+                <!-- 更新：使用你生成的图片按钮，不再用CSS画圆 -->
                 <div class="audio-bar">
-                    <button class="audio-btn" id="audioBtn" title="播放/暂停背景音乐">▶</button>
+                    <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
                     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
                 </div>
             </div>
@@ -226,9 +232,9 @@
                 }
             }
 
+            // 重点修改：更新音乐图标的切换逻辑
             function updateAudioBtn(playing) {
-                audioBtn.textContent = playing ? '⏸' : '▶';
-                audioBtn.classList.toggle('playing', playing);
+                audioBtn.src = playing ? 'pause-btn.png' : 'play-btn.png';
             }
 
             function openEnvelope() {
