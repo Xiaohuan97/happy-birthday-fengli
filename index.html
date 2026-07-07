@@ -5,36 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>生日快乐 - 给爸爸</title>
 
-    <!-- Supabase SDK (备用，未使用Supabase时可忽略) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
-    </script>
-
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
 
     <style>
-        /* ========== 样式保持不变 ========== */
         :root {
-            --envelope-color: #e8d5b5;
+            --envelope-light: #f0e2cd;
+            --envelope-main: #e8d5b5;
+            --envelope-mid: #dcc8a4;
             --envelope-dark: #c9a87c;
-            --envelope-flap: #dcc8a8;
             --envelope-shadow: #b8956e;
-            --seal-red: #c0392b;
-            --seal-dark: #8b1a1a;
             --card-bg: #fefdfb;
-            --card-border: #e0d5c5;
+            --card-inner: #faf7f2;
             --text-dark: #3a2f28;
             --text-medium: #5a4a3a;
             --text-light: #7a6a55;
             --gold: #b8862d;
             --gold-light: #d4a855;
             --accent: #c0392b;
-            --bg-gradient-start: #f5efe6;
-            --bg-gradient-end: #e8ddd0;
-            --lyric-bg: #faf7f2;
-            --highlight-color: #c0392b;
+            --accent-light: #e74c3c;
+            --bg-start: #f5efe6;
+            --bg-end: #e8ddd0;
+            --stamp-border: #c9a87c;
+            --divider-color: rgba(180, 140, 100, 0.5);
         }
 
         * {
@@ -48,7 +43,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #f5efe6 0%, #e8ddd0 30%, #f0e6d8 60%, #f5efe6 100%);
+            background: linear-gradient(160deg,
+                    #f5efe6 0%, #efe4d4 20%, #e8ddd0 40%,
+                    #f0e6d8 60%, #f5efe6 80%, #ece0d2 100%);
             background-attachment: fixed;
             font-family: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', serif;
             overflow-x: hidden;
@@ -58,7 +55,8 @@
             cursor: default;
         }
 
-        .particles {
+        /* ==================== 背景粒子 ==================== */
+        .particles-layer {
             position: fixed;
             top: 0;
             left: 0;
@@ -67,774 +65,1158 @@
             pointer-events: none;
             z-index: 0;
         }
-        .particle {
+        .particle-dot {
             position: absolute;
             border-radius: 50%;
-            animation: floatUp 8s infinite ease-in;
+            animation: floatUpward 9s infinite ease-in;
             opacity: 0;
         }
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            10% { opacity: 0.7; }
-            50% { opacity: 0.3; }
-            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        @keyframes floatUpward {
+            0% {
+                transform: translateY(105vh) scale(0);
+                opacity: 0;
+            }
+            8% {
+                opacity: 0.75;
+            }
+            45% {
+                opacity: 0.25;
+            }
+            100% {
+                transform: translateY(-15vh) scale(1.3);
+                opacity: 0;
+            }
         }
 
+        /* ==================== 主场景 ==================== */
         .scene {
             position: relative;
             z-index: 1;
-            perspective: 1500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            perspective: 1200px;
             perspective-origin: center center;
         }
 
+        /* ==================== 信封整体容器 ==================== */
         .envelope-wrapper {
             position: relative;
             width: 420px;
             height: 300px;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.35s ease;
             z-index: 10;
+            /* 悬浮微动 */
+            animation: envelopeFloat 4s ease-in-out infinite;
         }
-        .envelope-wrapper:hover { transform: translateY(-8px); }
-        .envelope-wrapper:hover .envelope-body { box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        .envelope-wrapper.opening { pointer-events: none; }
-        .envelope-wrapper.opened { pointer-events: none; }
+        @keyframes envelopeFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-4px);
+            }
+            85% {
+                transform: translateY(-8px);
+            }
+        }
+        .envelope-wrapper:hover {
+            transform: translateY(-12px);
+            animation-play-state: paused;
+        }
+        .envelope-wrapper:hover .envelope-body {
+            box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .envelope-wrapper.is-opening {
+            pointer-events: none;
+            animation-play-state: paused;
+        }
+        .envelope-wrapper.is-opened {
+            pointer-events: none;
+            animation-play-state: paused;
+            transform: translateY(0);
+        }
 
+        /* ==================== 信封主体 ==================== */
         .envelope-body {
             position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 85%;
-            background: linear-gradient(180deg, #f0e2cd 0%, #e8d5b5 5%, #dfc9a5 30%, #dcc49d 50%, #e0caa8 70%, #e8d5b5 100%);
-            border-radius: 8px;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.18), 0 3px 8px rgba(0,0,0,0.1);
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 72%;
+            background: linear-gradient(175deg,
+                    #f5e8d5 0%, #f0e2cd 4%, #e8d5b5 12%,
+                    #dfc9a5 30%, #dcc49d 50%,
+                    #e0caa8 68%, #e8d5b5 88%, #f0e0cc 100%);
+            border-radius: 10px;
+            box-shadow:
+                0 14px 40px rgba(0, 0, 0, 0.17),
+                0 3px 8px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
             z-index: 3;
             overflow: visible;
-            transition: box-shadow 0.3s ease;
+            transition: box-shadow 0.35s ease;
         }
+        /* 内边框装饰 */
         .envelope-body::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 8px;
-            border: 1.5px solid rgba(180,150,120,0.35);
+            top: 6px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border-radius: 6px;
+            border: 1.5px solid rgba(175, 145, 115, 0.28);
             pointer-events: none;
             z-index: 1;
         }
+        /* 顶部内部阴影（模拟信封开口） */
         .envelope-body::after {
             content: '';
             position: absolute;
-            top: 0; left: 10%; right: 10%;
-            height: 40px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.12) 0%, transparent 100%);
-            border-radius: 0 0 50% 50%;
+            top: 0;
+            left: 8%;
+            right: 8%;
+            height: 36px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
+            border-radius: 0 0 60% 60%;
             pointer-events: none;
             z-index: 0;
         }
 
-        .envelope-lines {
+        /* 信封上的装饰横线 */
+        .envelope-lines-group {
             position: absolute;
-            top: 50%; left: 15%; right: 15%;
-            height: 40px;
+            top: 55%;
+            left: 16%;
+            right: 16%;
+            height: 36px;
             z-index: 2;
             pointer-events: none;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 7px;
         }
-        .envelope-line {
-            width: 70%; height: 1.5px;
-            background: rgba(160,130,100,0.4);
+        .envelope-dash {
+            height: 1.5px;
+            background: rgba(155, 125, 95, 0.35);
             border-radius: 1px;
         }
-        .envelope-line:first-child { width: 55%; }
-        .envelope-line:last-child { width: 60%; }
+        .envelope-dash:nth-child(1) {
+            width: 50%;
+        }
+        .envelope-dash:nth-child(2) {
+            width: 68%;
+        }
+        .envelope-dash:nth-child(3) {
+            width: 56%;
+        }
 
-        .envelope-address {
+        /* 信封中央文字 */
+        .envelope-address-text {
             position: absolute;
-            top: 35%; left: 50%;
+            top: 36%;
+            left: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
             pointer-events: none;
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 1.5rem;
-            color: rgba(120,90,60,0.7);
-            letter-spacing: 0.15em;
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', cursive;
+            font-size: 1.55rem;
+            color: rgba(115, 85, 55, 0.7);
+            letter-spacing: 0.16em;
             text-align: center;
-            line-height: 1.6;
+            line-height: 1.5;
+            white-space: nowrap;
         }
 
-        .stamp {
+        /* ==================== 邮票 ==================== */
+        .stamp-badge {
             position: absolute;
-            top: 15px; right: 20px;
-            width: 55px; height: 65px;
-            background: linear-gradient(135deg, #fdf5e6 0%, #fef9f2 100%);
-            border: 2px dashed #c9a87c;
-            z-index: 4;
+            top: 14px;
+            right: 18px;
+            width: 56px;
+            height: 66px;
+            background: linear-gradient(140deg, #fdf5e6 0%, #fef9f2 40%, #faf2e6 100%);
+            border: 2.5px dashed var(--stamp-border);
+            z-index: 5;
             pointer-events: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 3px;
-            box-shadow: 1px 2px 6px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.1), inset 0 0 0 2px rgba(255, 255, 255, 0.6);
+            transition: all 0.7s ease;
         }
-        .stamp-inner {
-            width: 80%; height: 80%;
+        .stamp-badge .stamp-text {
+            width: 78%;
+            height: 78%;
             background: linear-gradient(135deg, #faf0e0, #fff8f0);
             border-radius: 2px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.55rem;
+            font-size: 0.52rem;
             color: #b8862d;
             font-weight: 700;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
             writing-mode: vertical-rl;
             font-family: 'Noto Serif SC', serif;
+            text-align: center;
+        }
+        /* 打开后邮票保留 */
+        .envelope-wrapper.is-opened .stamp-badge {
+            opacity: 0.85;
         }
 
+        /* ==================== 封口（三角形信封盖） ==================== */
         .envelope-flap {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 55%;
-            background: linear-gradient(180deg, #e8d5b5 0%, #ddc8a4 20%, #d4bb93 50%, #d9c29d 70%, #e0cbaa 100%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(180deg,
+                    #f0e0ca 0%, #e8d5b5 8%, #ddc8a4 25%,
+                    #d4bb93 50%, #d9c29d 70%, #e0cbaa 100%);
             clip-path: polygon(0 0, 50% 100%, 100% 0);
-            z-index: 5;
+            z-index: 6;
             transform-origin: top center;
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 8px 8px 0 0;
-            box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.75s cubic-bezier(0.42, 0, 0.18, 1);
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
             cursor: pointer;
+            backface-visibility: hidden;
         }
+        /* 封口纹理线 */
         .envelope-flap::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             clip-path: polygon(0 0, 50% 100%, 100% 0);
-            border: 1.5px solid rgba(180,150,120,0.35);
+            border: 1.5px solid rgba(175, 145, 115, 0.3);
             border-bottom: none;
-            border-radius: 8px 8px 0 0;
+            border-radius: 10px 10px 0 0;
             pointer-events: none;
         }
+        /* 封口打开状态 */
         .envelope-wrapper.flap-open .envelope-flap {
-            transform: rotateX(-180deg);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transform: rotateX(-175deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
             z-index: 0;
+            transition: transform 0.75s cubic-bezier(0.42, 0, 0.18, 1), box-shadow 0.5s ease 0.2s;
         }
 
-        .seal {
+        /* ==================== 火漆印章小圆点 ==================== */
+        .seal-dot {
             position: absolute;
-            top: 75%; left: 50%;
+            top: 58%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 48px; height: 48px;
-            background: radial-gradient(ellipse at 35% 30%, #e74c3c 0%, #c0392b 40%, #8b1a1a 100%);
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(ellipse at 35% 28%,
+                    #e74c3c 0%, #c0392b 38%, #8b1a1a 100%);
             border-radius: 50%;
-            z-index: 6;
+            z-index: 7;
             pointer-events: none;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2), inset 0 1px 2px rgba(255,255,255,0.25);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.3),
+                0 1px 3px rgba(0, 0, 0, 0.2),
+                inset 0 1px 2px rgba(255, 255, 255, 0.22);
+            transition: all 0.55s cubic-bezier(0.42, 0, 0.18, 1);
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .seal::before {
+        .seal-dot::before {
             content: '♡';
-            font-size: 1.1rem;
-            color: rgba(255,255,255,0.7);
-            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.65);
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
             line-height: 1;
         }
-        .seal::after {
+        .seal-dot::after {
             content: '';
             position: absolute;
-            top: 8px; left: 10px;
-            width: 14px; height: 10px;
-            background: rgba(255,255,255,0.35);
+            top: 7px;
+            left: 9px;
+            width: 11px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            transform: rotate(-20deg);
+            transform: rotate(-22deg);
         }
-        .envelope-wrapper.flap-open .seal {
+        .envelope-wrapper.flap-open .seal-dot {
             opacity: 0;
-            transform: translate(-50%, -50%) scale(0.5);
-            transition: all 0.4s ease;
+            transform: translate(-50%, -50%) scale(0.4);
+            transition: all 0.4s ease 0.1s;
         }
 
+        /* ==================== 贺卡容器 ==================== */
         .card-container {
             position: absolute;
-            bottom: 0; left: 50%;
-            transform: translateX(-50%) translateY(30px);
-            width: 88%;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 86%;
             z-index: 1;
-            transition: transform 0.9s cubic-bezier(0.25, 0.1, 0.1, 1);
+            transition: transform 0.85s cubic-bezier(0.22, 0.1, 0.05, 1);
             pointer-events: none;
         }
+        /* 贺卡升起 */
         .card-container.risen {
-            transform: translateX(-50%) translateY(-105%);
+            transform: translateX(-50%) translateY(-108%);
             pointer-events: auto;
             z-index: 20;
-            transition: transform 0.9s cubic-bezier(0.25, 0.1, 0.1, 1);
+            transition: transform 0.85s cubic-bezier(0.22, 0.1, 0.05, 1);
         }
 
+        /* ==================== 贺卡本身 ==================== */
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.2), 0 2px 10px rgba(0,0,0,0.1);
-            padding: 0;
+            border-radius: 14px;
+            box-shadow: 0 10px 45px rgba(0, 0, 0, 0.22), 0 2px 12px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             position: relative;
-            max-height: 70vh;
+            max-height: 68vh;
             display: flex;
             flex-direction: column;
+            border: 1px solid rgba(180, 150, 120, 0.2);
         }
+        /* 内边框 */
         .card::before {
             content: '';
             position: absolute;
-            top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 1.5px solid rgba(180,150,120,0.35);
-            border-radius: 6px;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            border: 1.5px solid rgba(180, 150, 120, 0.3);
+            border-radius: 8px;
             pointer-events: none;
             z-index: 1;
         }
 
+        /* ==================== 贺卡上半：祝福内容 ==================== */
         .card-blessing {
-            padding: 30px 28px 20px;
+            padding: 28px 26px 18px;
             text-align: center;
             position: relative;
             z-index: 2;
             flex-shrink: 0;
         }
         .card-blessing .icon-top {
-            font-size: 2rem;
-            margin-bottom: 8px;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
             display: block;
             animation: gentlePulse 3s infinite ease-in-out;
         }
         @keyframes gentlePulse {
-            0%,100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.15); opacity: 1; }
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.75;
+            }
+            50% {
+                transform: scale(1.18);
+                opacity: 1;
+            }
         }
-        .card-blessing .title {
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 2.2rem;
+        .card-blessing .main-title {
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', cursive;
+            font-size: 2.3rem;
             color: var(--accent);
-            margin-bottom: 6px;
-            letter-spacing: 0.08em;
+            margin-bottom: 5px;
+            letter-spacing: 0.1em;
             font-weight: 700;
             line-height: 1.3;
         }
-        .card-blessing .subtitle {
-            font-family: 'ZCOOL XiaoWei', serif;
-            font-size: 1rem;
+        .card-blessing .sub-title {
+            font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+            font-size: 0.95rem;
             color: var(--gold);
-            margin-bottom: 16px;
-            letter-spacing: 0.12em;
+            margin-bottom: 14px;
+            letter-spacing: 0.13em;
             font-weight: 400;
         }
-        .card-blessing .greeting {
+        .card-blessing .greeting-text {
             font-family: 'Noto Serif SC', serif;
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: var(--text-dark);
             line-height: 2;
             letter-spacing: 0.04em;
             text-align: center;
             font-weight: 400;
         }
-        .card-blessing .greeting .highlight {
+        .card-blessing .greeting-text .hl {
             color: var(--accent);
             font-weight: 600;
         }
-        .card-blessing .signature {
-            margin-top: 18px;
-            font-family: 'Ma Shan Zheng', cursive;
-            font-size: 1.3rem;
+        .card-blessing .signature-line {
+            margin-top: 16px;
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', cursive;
+            font-size: 1.25rem;
             color: var(--text-medium);
-            letter-spacing: 0.06em;
+            letter-spacing: 0.07em;
             text-align: right;
-            padding-right: 10px;
+            padding-right: 8px;
         }
         .card-blessing .date-line {
             font-family: 'Noto Serif SC', serif;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-light);
             text-align: right;
-            padding-right: 10px;
+            padding-right: 8px;
             margin-top: 2px;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
         }
 
-        .divider {
-            width: 60%;
+        /* ==================== 分隔线 ==================== */
+        .divider-line {
+            width: 55%;
             margin: 0 auto;
             height: 1px;
-            background: linear-gradient(90deg, transparent 0%, rgba(180,140,100,0.5) 20%, rgba(180,140,100,0.7) 50%, rgba(180,140,100,0.5) 80%, transparent 100%);
+            background: linear-gradient(90deg,
+                    transparent 0%, var(--divider-color) 18%,
+                    var(--divider-color) 50%,
+                    var(--divider-color) 82%, transparent 100%);
             position: relative;
             z-index: 2;
             flex-shrink: 0;
         }
-        .divider::after {
+        .divider-line::after {
             content: '♪';
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             background: var(--card-bg);
-            padding: 0 12px;
+            padding: 0 14px;
             color: var(--gold);
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
+        /* ==================== 贺卡下半：歌词区域 ==================== */
         .card-lyrics-section {
             flex: 1;
             overflow: hidden;
             position: relative;
             z-index: 2;
-            min-height: 180px;
-            max-height: 280px;
-            background: linear-gradient(180deg, var(--card-bg) 0%, var(--lyric-bg) 8%, var(--lyric-bg) 92%, var(--card-bg) 100%);
-            padding: 10px 20px 15px;
+            min-height: 170px;
+            max-height: 260px;
+            background: linear-gradient(180deg,
+                    var(--card-bg) 0%, var(--card-inner) 6%,
+                    var(--card-inner) 94%, var(--card-bg) 100%);
+            padding: 8px 18px 12px;
             display: flex;
             flex-direction: column;
         }
-        .lyrics-label {
+        .lyrics-label-row {
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: var(--text-light);
-            letter-spacing: 0.15em;
-            margin-bottom: 6px;
+            letter-spacing: 0.16em;
+            margin-bottom: 4px;
             font-family: 'Noto Serif SC', serif;
             flex-shrink: 0;
         }
-        .lyrics-container {
+        .lyrics-scroll {
             flex: 1;
             overflow-y: auto;
             scroll-behavior: smooth;
-            padding: 8px 0;
+            padding: 6px 0;
             position: relative;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
-            scrollbar-color: rgba(180,150,120,0.3) transparent;
+            scrollbar-color: rgba(180, 150, 120, 0.28) transparent;
         }
-        .lyrics-container::-webkit-scrollbar { width: 4px; }
-        .lyrics-container::-webkit-scrollbar-track { background: transparent; }
-        .lyrics-container::-webkit-scrollbar-thumb { background: rgba(180,150,120,0.3); border-radius: 2px; }
-
-        .lyric-line {
+        .lyrics-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .lyrics-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .lyrics-scroll::-webkit-scrollbar-thumb {
+            background: rgba(180, 150, 120, 0.28);
+            border-radius: 3px;
+        }
+        .lyric-row {
             text-align: center;
-            padding: 7px 15px;
-            font-size: 0.95rem;
+            padding: 6px 14px;
+            font-size: 0.9rem;
             color: var(--text-light);
             transition: all 0.5s ease;
-            font-family: 'ZCOOL XiaoWei', serif;
+            font-family: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
             letter-spacing: 0.05em;
             cursor: default;
             border-radius: 20px;
             margin: 2px 0;
             line-height: 1.6;
         }
-        .lyric-line.active {
-            color: var(--highlight-color);
+        .lyric-row.active-lyric {
+            color: var(--accent);
             font-weight: 700;
-            font-size: 1.15rem;
-            text-shadow: 0 0 20px rgba(192,57,43,0.2);
-            animation: lyricGlow 0.6s ease-out;
-            background: rgba(192,57,43,0.04);
+            font-size: 1.1rem;
+            text-shadow: 0 0 18px rgba(192, 57, 43, 0.18);
+            animation: lyricPop 0.55s ease-out;
+            background: rgba(192, 57, 43, 0.035);
         }
-        @keyframes lyricGlow {
-            0% { text-shadow: 0 0 30px rgba(192,57,43,0.5); transform: scale(1.05); }
-            100% { text-shadow: 0 0 20px rgba(192,57,43,0.2); transform: scale(1); }
+        @keyframes lyricPop {
+            0% {
+                text-shadow: 0 0 28px rgba(192, 57, 43, 0.5);
+                transform: scale(1.06);
+            }
+            100% {
+                text-shadow: 0 0 18px rgba(192, 57, 43, 0.18);
+                transform: scale(1);
+            }
         }
-        .lyric-line.past {
-            color: rgba(120,100,80,0.45);
-            font-size: 0.85rem;
+        .lyric-row.past-lyric {
+            color: rgba(120, 100, 80, 0.4);
+            font-size: 0.8rem;
         }
 
-        .audio-control {
+        /* ==================== 音频控制条 ==================== */
+        .audio-bar {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 6px 0 2px;
+            padding: 5px 0 2px;
             flex-shrink: 0;
             z-index: 3;
         }
-        .audio-btn {
-            width: 34px; height: 34px;
+        .audio-play-btn {
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
-            border: 1.5px solid rgba(180,150,120,0.5);
-            background: rgba(255,255,255,0.8);
+            border: 1.5px solid rgba(180, 150, 120, 0.55);
+            background: rgba(255, 255, 255, 0.85);
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-medium);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             pointer-events: auto;
+            flex-shrink: 0;
         }
-        .audio-btn:hover {
+        .audio-play-btn:hover {
             background: #fff;
             border-color: var(--gold);
             color: var(--accent);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
         }
-        .audio-btn.playing {
+        .audio-play-btn.is-playing {
             background: var(--accent);
             border-color: var(--accent);
             color: #fff;
         }
-        .audio-progress {
-            width: 80px; height: 3px;
-            background: rgba(180,150,120,0.3);
-            border-radius: 2px;
+        .audio-progress-track {
+            width: 80px;
+            height: 3px;
+            background: rgba(180, 150, 120, 0.3);
+            border-radius: 3px;
             overflow: hidden;
             pointer-events: none;
+            flex-shrink: 0;
         }
         .audio-progress-fill {
             height: 100%;
             background: var(--accent);
-            border-radius: 2px;
+            border-radius: 3px;
             width: 0%;
             transition: width 0.3s linear;
         }
 
-        .hint-text {
+        /* ==================== 关闭按钮 ==================== */
+        .close-btn-icon {
             position: absolute;
-            bottom: -50px; left: 50%;
+            top: 8px;
+            right: 14px;
+            z-index: 25;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            transition: all 0.35s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease 0.7s, background 0.3s ease;
+        }
+        .close-btn-icon.visible-x {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .close-btn-icon:hover {
+            background: rgba(0, 0, 0, 0.12);
+            color: var(--text-dark);
+        }
+
+        /* ==================== 底部提示 ==================== */
+        .hint-label {
+            position: absolute;
+            bottom: -48px;
+            left: 50%;
             transform: translateX(-50%);
-            font-size: 0.85rem;
-            color: rgba(140,110,80,0.7);
-            letter-spacing: 0.08em;
-            animation: hintBounce 2s infinite ease-in-out;
+            font-size: 0.82rem;
+            color: rgba(140, 110, 80, 0.65);
+            letter-spacing: 0.09em;
+            animation: hintBounce 2.2s infinite ease-in-out;
             pointer-events: none;
             z-index: 0;
             white-space: nowrap;
             font-family: 'Noto Serif SC', serif;
         }
         @keyframes hintBounce {
-            0%,100% { transform: translateX(-50%) translateY(0); opacity: 0.6; }
-            50% { transform: translateX(-50%) translateY(-8px); opacity: 1; }
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateX(-50%) translateY(-9px);
+                opacity: 1;
+            }
         }
-        .hint-text.hidden { display: none; }
-
-        .close-btn {
-            position: absolute;
-            top: 8px; right: 14px;
-            z-index: 25;
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0,0,0,0.06);
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--text-light);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease 0.8s;
-        }
-        .close-btn.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .close-btn:hover {
-            background: rgba(0,0,0,0.12);
-            color: var(--text-dark);
+        .hint-label.is-hidden {
+            display: none;
         }
 
+        /* ==================== 响应式 ==================== */
         @media (max-width: 500px) {
-            .envelope-wrapper { width: 88vw; height: 240px; }
-            .card-container { width: 82vw; }
-            .card-blessing { padding: 22px 18px 14px; }
-            .card-blessing .title { font-size: 1.7rem; }
-            .card-blessing .greeting { font-size: 0.9rem; line-height: 1.8; }
-            .card-blessing .signature { font-size: 1.1rem; }
-            .lyric-line { font-size: 0.8rem; padding: 5px 12px; }
-            .lyric-line.active { font-size: 1rem; }
-            .card-lyrics-section { max-height: 200px; min-height: 140px; }
-            .card { max-height: 65vh; }
-            .seal { width: 38px; height: 38px; top: 73%; }
-            .stamp { width: 42px; height: 50px; top: 10px; right: 14px; }
-            .envelope-address { font-size: 1.2rem; top: 33%; }
-            .hint-text { bottom: -40px; font-size: 0.75rem; }
+            .envelope-wrapper {
+                width: 88vw;
+                height: 240px;
+            }
+            .card-container {
+                width: 82vw;
+            }
+            .card-blessing {
+                padding: 22px 16px 14px;
+            }
+            .card-blessing .main-title {
+                font-size: 1.8rem;
+            }
+            .card-blessing .greeting-text {
+                font-size: 0.85rem;
+                line-height: 1.8;
+            }
+            .card-blessing .signature-line {
+                font-size: 1.1rem;
+            }
+            .lyric-row {
+                font-size: 0.76rem;
+                padding: 5px 10px;
+            }
+            .lyric-row.active-lyric {
+                font-size: 0.95rem;
+            }
+            .card-lyrics-section {
+                max-height: 200px;
+                min-height: 130px;
+            }
+            .card {
+                max-height: 62vh;
+            }
+            .seal-dot {
+                width: 32px;
+                height: 32px;
+                top: 56%;
+            }
+            .stamp-badge {
+                width: 42px;
+                height: 52px;
+                top: 10px;
+                right: 12px;
+            }
+            .stamp-badge .stamp-text {
+                font-size: 0.42rem;
+            }
+            .envelope-address-text {
+                font-size: 1.2rem;
+                top: 34%;
+            }
+            .hint-label {
+                bottom: -38px;
+                font-size: 0.7rem;
+            }
+            .envelope-flap {
+                height: 46%;
+            }
         }
         @media (max-width: 360px) {
-            .envelope-wrapper { width: 92vw; height: 200px; }
-            .card-container { width: 86vw; }
-            .card-blessing .title { font-size: 1.4rem; }
-            .card-blessing .greeting { font-size: 0.78rem; line-height: 1.7; }
-            .card-lyrics-section { max-height: 160px; min-height: 120px; }
-            .lyric-line { font-size: 0.7rem; }
-            .lyric-line.active { font-size: 0.88rem; }
-            .seal { width: 30px; height: 30px; top: 72%; }
+            .envelope-wrapper {
+                width: 92vw;
+                height: 200px;
+            }
+            .card-container {
+                width: 86vw;
+            }
+            .card-blessing .main-title {
+                font-size: 1.5rem;
+            }
+            .card-blessing .greeting-text {
+                font-size: 0.74rem;
+                line-height: 1.7;
+            }
+            .card-lyrics-section {
+                max-height: 150px;
+                min-height: 110px;
+            }
+            .lyric-row {
+                font-size: 0.68rem;
+            }
+            .lyric-row.active-lyric {
+                font-size: 0.85rem;
+            }
+            .seal-dot {
+                width: 26px;
+                height: 26px;
+                top: 55%;
+            }
+            .stamp-badge {
+                width: 34px;
+                height: 44px;
+                top: 8px;
+                right: 10px;
+            }
+            .stamp-badge .stamp-text {
+                font-size: 0.36rem;
+            }
+            .envelope-address-text {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="particles" id="particles"></div>
+    <!-- 背景粒子 -->
+    <div class="particles-layer" id="particlesLayer"></div>
 
-<div class="scene" id="scene">
-    <div class="envelope-wrapper" id="envelopeWrapper" title="点击打开信封">
-        <div class="envelope-body">
-            <div class="envelope-lines">
-                <div class="envelope-line"></div>
-                <div class="envelope-line"></div>
-                <div class="envelope-line"></div>
-            </div>
-            <div class="envelope-address">致 · 亲爱的爸爸</div>
-        </div>
-        <div class="stamp">
-            <div class="stamp-inner">生日<br>快乐</div>
-        </div>
-        <div class="envelope-flap" id="envelopeFlap"></div>
-        <div class="seal" id="seal"></div>
-
-        <div class="card-container" id="cardContainer">
-            <div class="card" id="card">
-                <button class="close-btn" id="closeBtn" title="收起贺卡">✕</button>
-
-                <!-- 祝福内容 -->
-                <div class="card-blessing">
-                    <span class="icon-top">🎂</span>
-                    <div class="title">生 日 快 乐</div>
-                    <div class="subtitle">—— 致我最敬爱的爸爸 ——</div>
-                    <div class="greeting">
-                        亲爱的<span class="highlight">爸爸</span>，<br><br>
-                        今天是您的生日，<br>
-                        我想对您说一声：<br>
-                        <span class="highlight">辛苦了，谢谢您！</span><br><br>
-                        感谢您多年来的养育与呵护，<br>
-                        您的每一滴汗水、每一根白发，<br>
-                        都是为我撑起一片天的印记。<br><br>
-                        愿时光慢一些，<br>
-                        愿您<span class="highlight">身体健康、笑容常在</span>，<br>
-                        愿幸福与温暖常伴您左右。<br>
-                        无论我走到哪里，<br>
-                        您永远是我心中最坚实的依靠。
-                    </div>
-                    <div class="signature">—— 永远爱您的孩子</div>
-                    <div class="date-line" id="dateLine"></div>
+    <!-- 主场景 -->
+    <div class="scene" id="sceneRoot">
+        <!-- 信封整体 -->
+        <div class="envelope-wrapper" id="envelopeWrapper" title="点击打开信封">
+            <!-- 信封主体 -->
+            <div class="envelope-body">
+                <div class="envelope-lines-group">
+                    <div class="envelope-dash"></div>
+                    <div class="envelope-dash"></div>
+                    <div class="envelope-dash"></div>
                 </div>
+                <div class="envelope-address-text">致 · 亲爱的爸爸</div>
+            </div>
 
-                <div class="divider"></div>
+            <!-- 邮票 -->
+            <div class="stamp-badge">
+                <div class="stamp-text">生日<br>快乐</div>
+            </div>
 
-                <!-- 歌词区域（已替换为《生日感恩暖阳》） -->
-                <div class="card-lyrics-section">
-                    <div class="lyrics-label">🎵 生日感恩暖阳</div>
-                    <div class="lyrics-container" id="lyricsContainer">
-                        <div class="lyric-line" data-time="0">— 生日感恩暖阳 —</div>
-                        <div class="lyric-line" data-time="4.2">晨光爬过粥锅沿</div>
-                        <div class="lyric-line" data-time="7.5">您擦胡茬笑眼弯</div>
-                        <div class="lyric-line" data-time="10.8">公文包挂门把边</div>
-                        <div class="lyric-line" data-time="14.1">喊我快趁热添饭</div>
-                        <div class="lyric-line" data-time="17.4">阳光绕着您转圈圈</div>
-                        <div class="lyric-line" data-time="20.7">笑纹里藏蜜甜</div>
-                        <div class="lyric-line" data-time="25.3">寒夜等候路灯前</div>
-                        <div class="lyric-line" data-time="28.6">肩头落满薄霜寒</div>
-                        <div class="lyric-line" data-time="31.9">奔波半生未偷闲</div>
-                        <div class="lyric-line" data-time="35.2">扛起全家四季安</div>
-                        <div class="lyric-line" data-time="38.5">今朝生辰许小心愿</div>
-                        <div class="lyric-line" data-time="41.8">岁岁常相见</div>
-                        <div class="lyric-line" data-time="46.4">感恩暖阳 是您温暖双肩</div>
-                        <div class="lyric-line" data-time="50.1">遮过风雨 护我岁岁平安</div>
-                        <div class="lyric-line" data-time="53.7">人间万般温柔 皆出自您眉眼</div>
-                        <div class="lyric-line" data-time="57.3">余生换我 伴您朝夕三餐</div>
-                        <div class="lyric-line" data-time="62.0">感恩暖阳 予我岁岁心安</div>
-                        <div class="lyric-line" data-time="65.6">时光慢些 留住您的容颜</div>
-                        <div class="lyric-line" data-time="69.2">从前您撑天地 如今我来分担</div>
-                        <div class="lyric-line" data-time="72.8">岁岁生辰 暖意永不消散</div>
-                        <div class="lyric-line" data-time="160">— 尾奏 —</div>
+            <!-- 封口 -->
+            <div class="envelope-flap" id="envelopeFlap"></div>
+
+            <!-- 火漆小印章 -->
+            <div class="seal-dot" id="sealDot"></div>
+
+            <!-- 贺卡（初始隐藏在信封内） -->
+            <div class="card-container" id="cardContainer">
+                <div class="card" id="card">
+                    <!-- 关闭按钮 -->
+                    <button class="close-btn-icon" id="closeBtnIcon" title="收起贺卡">✕</button>
+
+                    <!-- 上半：祝福内容 -->
+                    <div class="card-blessing">
+                        <span class="icon-top">🎂</span>
+                        <div class="main-title">生 日 快 乐</div>
+                        <div class="sub-title">—— 致我最敬爱的爸爸 ——</div>
+                        <div class="greeting-text">
+                            亲爱的<span class="hl">爸爸</span>，<br><br>
+                            今天是您的生日，<br>
+                            我想对您说一声：<br>
+                            <span class="hl">辛苦了，谢谢您！</span><br><br>
+                            感谢您多年来的养育与呵护，<br>
+                            您的每一滴汗水、每一根白发，<br>
+                            都是为我撑起一片天的印记。<br><br>
+                            愿时光慢一些，<br>
+                            愿您<span class="hl">身体健康、笑容常在</span>，<br>
+                            愿幸福与温暖常伴您左右。<br>
+                            无论我走到哪里，<br>
+                            您永远是我心中最坚实的依靠。
+                        </div>
+                        <div class="signature-line">—— 永远爱您的孩子</div>
+                        <div class="date-line" id="dateLineDisplay"></div>
                     </div>
-                    <div class="audio-control">
-                        <button class="audio-btn" id="audioBtn" title="播放/暂停">▶</button>
-                        <div class="audio-progress">
-                            <div class="audio-progress-fill" id="audioProgressFill"></div>
+
+                    <!-- 分隔线 -->
+                    <div class="divider-line"></div>
+
+                    <!-- 下半：歌词区域 -->
+                    <div class="card-lyrics-section">
+                        <div class="lyrics-label-row">🎵 生日感恩暖阳</div>
+                        <div class="lyrics-scroll" id="lyricsScroll">
+                            <!-- 歌词行，data-time 对应歌曲秒数 -->
+                            <div class="lyric-row" data-time="0">— ♪ 生日感恩暖阳 ♪ —</div>
+                            <div class="lyric-row" data-time="4.2">晨光爬过粥锅沿</div>
+                            <div class="lyric-row" data-time="7.5">您擦胡茬笑眼弯</div>
+                            <div class="lyric-row" data-time="10.8">公文包挂门把边</div>
+                            <div class="lyric-row" data-time="14.1">喊我快趁热添饭</div>
+                            <div class="lyric-row" data-time="17.4">阳光绕着您转圈圈</div>
+                            <div class="lyric-row" data-time="20.7">笑纹里藏蜜甜</div>
+                            <div class="lyric-row" data-time="25.3">寒夜等候路灯前</div>
+                            <div class="lyric-row" data-time="28.6">肩头落满薄霜寒</div>
+                            <div class="lyric-row" data-time="31.9">奔波半生未偷闲</div>
+                            <div class="lyric-row" data-time="35.2">扛起全家四季安</div>
+                            <div class="lyric-row" data-time="38.5">今朝生辰许小心愿</div>
+                            <div class="lyric-row" data-time="41.8">岁岁常相见</div>
+                            <div class="lyric-row" data-time="46.4">感恩暖阳 是您温暖双肩</div>
+                            <div class="lyric-row" data-time="50.1">遮过风雨 护我岁岁平安</div>
+                            <div class="lyric-row" data-time="53.7">人间万般温柔 皆出自您眉眼</div>
+                            <div class="lyric-row" data-time="57.3">余生换我 伴您朝夕三餐</div>
+                            <div class="lyric-row" data-time="62.0">感恩暖阳 予我岁岁心安</div>
+                            <div class="lyric-row" data-time="65.6">时光慢些 留住您的容颜</div>
+                            <div class="lyric-row" data-time="69.2">从前您撑天地 如今我来分担</div>
+                            <div class="lyric-row" data-time="72.8">岁岁生辰 暖意永不消散</div>
+                            <div class="lyric-row" data-time="160">— ♪ 尾奏 ♪ —</div>
+                        </div>
+
+                        <!-- 音频控制 -->
+                        <div class="audio-bar">
+                            <button class="audio-play-btn" id="audioPlayBtn" title="播放/暂停">▶</button>
+                            <div class="audio-progress-track">
+                                <div class="audio-progress-fill" id="audioProgressFill"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 底部提示 -->
+        <div class="hint-label" id="hintLabel">👆 点击信封打开贺卡</div>
     </div>
-    <div class="hint-text" id="hintText">👆 点击信封打开贺卡</div>
-</div>
 
-<audio id="bgAudio" preload="auto" loop></audio>
+    <!-- 隐藏的音频元素 -->
+    <audio id="bgAudio" preload="auto" loop></audio>
 
-<script>
-    (function() {
-        // ========== 音乐配置 ==========
-        // 音乐文件放在 GitHub 仓库根目录，请确保文件名是 birthday-song.mp3
-        // 如果您使用了其他文件名，请修改下面这行
-        const MUSIC_FILE = 'birthday-song.mp3';
+    <script>
+        (function() {
+            // ==================== 音乐文件配置 ====================
+            // 请将音乐文件放在 GitHub 仓库根目录，命名为 birthday-song.mp3
+            const MUSIC_FILE = 'birthday-song.mp3';
 
-        // ========== DOM 元素 ==========
-        const envelopeWrapper = document.getElementById('envelopeWrapper');
-        const envelopeFlap = document.getElementById('envelopeFlap');
-        const seal = document.getElementById('seal');
-        const cardContainer = document.getElementById('cardContainer');
-        const card = document.getElementById('card');
-        const closeBtn = document.getElementById('closeBtn');
-        const hintText = document.getElementById('hintText');
-        const bgAudio = document.getElementById('bgAudio');
-        const audioBtn = document.getElementById('audioBtn');
-        const audioProgressFill = document.getElementById('audioProgressFill');
-        const lyricsContainer = document.getElementById('lyricsContainer');
-        const lyricLines = document.querySelectorAll('.lyric-line');
-        const dateLine = document.getElementById('dateLine');
-        const particlesContainer = document.getElementById('particles');
+            // ==================== DOM 引用 ====================
+            const envelopeWrapper = document.getElementById('envelopeWrapper');
+            const envelopeFlap = document.getElementById('envelopeFlap');
+            const sealDot = document.getElementById('sealDot');
+            const cardContainer = document.getElementById('cardContainer');
+            const closeBtnIcon = document.getElementById('closeBtnIcon');
+            const hintLabel = document.getElementById('hintLabel');
+            const bgAudio = document.getElementById('bgAudio');
+            const audioPlayBtn = document.getElementById('audioPlayBtn');
+            const audioProgressFill = document.getElementById('audioProgressFill');
+            const lyricsScroll = document.getElementById('lyricsScroll');
+            const lyricRows = document.querySelectorAll('.lyric-row');
+            const dateLineDisplay = document.getElementById('dateLineDisplay');
+            const particlesLayer = document.getElementById('particlesLayer');
 
-        dateLine.textContent = new Date().toLocaleDateString('zh-CN', { year:'numeric', month:'long', day:'numeric' });
+            // 设置日期
+            const today = new Date();
+            dateLineDisplay.textContent =
+                `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
 
-        // ========== 背景粒子 ==========
-        function createParticles() {
-            const colors = ['#e8c9a0','#f0dcc0','#d4a855','#e8d5b5','#f5e6d0','#c9a87c','#fdf5e6'];
-            for (let i = 0; i < 35; i++) {
-                const p = document.createElement('div');
-                p.classList.add('particle');
-                p.style.left = Math.random()*100+'%';
-                p.style.width = p.style.height = (Math.random()*8+3)+'px';
-                p.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
-                p.style.animationDuration = (Math.random()*10+8)+'s';
-                p.style.animationDelay = Math.random()*8+'s';
-                particlesContainer.appendChild(p);
-            }
-        }
-        createParticles();
+            // ==================== 状态 ====================
+            let isOpen = false;
+            let isAnimating = false;
+            let isAudioLoaded = false;
+            let currentLyricIdx = -1;
 
-        // ========== 音频初始化 ==========
-        bgAudio.src = MUSIC_FILE;
-        bgAudio.load();
-        let isAudioReady = false;
-        bgAudio.addEventListener('loadeddata', () => { isAudioReady = true; });
-        bgAudio.addEventListener('error', () => { console.warn('音频加载失败，请确认文件名是否为 birthday-song.mp3 并放在仓库根目录'); });
-
-        // ========== 信封动画 ==========
-        let isEnvelopeOpen = false;
-        let isAnimating = false;
-
-        function openEnvelope() {
-            if (isAnimating || isEnvelopeOpen) return;
-            isAnimating = true;
-            hintText.classList.add('hidden');
-            envelopeWrapper.classList.add('flap-open','opening');
-            setTimeout(() => {
-                cardContainer.classList.add('risen');
-                setTimeout(() => closeBtn.classList.add('visible'), 400);
-            }, 500);
-            setTimeout(() => {
-                if (isAudioReady) {
-                    bgAudio.play().then(() => updateAudioBtn(true)).catch(() => updateAudioBtn(false));
+            // ==================== 背景粒子 ====================
+            function spawnParticles() {
+                const palette = [
+                    '#e8c9a0', '#f0dcc0', '#d4a855', '#e8d5b5',
+                    '#f5e6d0', '#c9a87c', '#fdf5e6', '#e0cbaa'
+                ];
+                const count = 32;
+                for (let i = 0; i < count; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('particle-dot');
+                    dot.style.left = Math.random() * 100 + '%';
+                    const size = Math.random() * 7 + 3;
+                    dot.style.width = size + 'px';
+                    dot.style.height = size + 'px';
+                    dot.style.backgroundColor = palette[Math.floor(Math.random() * palette.length)];
+                    dot.style.animationDuration = (Math.random() * 11 + 9) + 's';
+                    dot.style.animationDelay = (Math.random() * 9) + 's';
+                    particlesLayer.appendChild(dot);
                 }
-                isEnvelopeOpen = true;
-                isAnimating = false;
-                envelopeWrapper.classList.add('opened');
-            }, 900);
-        }
+            }
+            spawnParticles();
 
-        function closeEnvelope() {
-            if (isAnimating || !isEnvelopeOpen) return;
-            isAnimating = true;
-            bgAudio.pause();
-            updateAudioBtn(false);
-            closeBtn.classList.remove('visible');
-            cardContainer.classList.remove('risen');
-            setTimeout(() => {
-                envelopeWrapper.classList.remove('flap-open','opened','opening');
-            }, 300);
-            setTimeout(() => {
-                hintText.classList.remove('hidden');
-                isEnvelopeOpen = false;
-                isAnimating = false;
-                resetLyrics();
-            }, 800);
-        }
+            // ==================== 音频初始化 ====================
+            bgAudio.src = MUSIC_FILE;
+            bgAudio.load();
 
-        // ========== 歌词同步 ==========
-        let currentLyricIndex = -1;
-        function resetLyrics() {
-            currentLyricIndex = -1;
-            lyricLines.forEach(l => l.classList.remove('active','past'));
-            lyricsContainer.scrollTop = 0;
-            audioProgressFill.style.width = '0%';
-        }
-        function updateLyrics(currentTime) {
-            let activeIndex = -1;
-            lyricLines.forEach((line, index) => {
-                if (currentTime >= parseFloat(line.dataset.time)) activeIndex = index;
+            bgAudio.addEventListener('loadeddata', () => {
+                isAudioLoaded = true;
+                console.log('✅ 音频加载完成，时长:', bgAudio.duration.toFixed(1), '秒');
             });
-            if (activeIndex !== currentLyricIndex && activeIndex >= 0) {
-                lyricLines.forEach(l => l.classList.remove('active','past'));
-                const activeLine = lyricLines[activeIndex];
-                activeLine.classList.add('active');
-                for (let i = 0; i < activeIndex; i++) lyricLines[i].classList.add('past');
-                lyricsContainer.scrollTo({
-                    top: activeLine.offsetTop - lyricsContainer.clientHeight/2 + activeLine.offsetHeight/2,
-                    behavior: 'smooth'
+            bgAudio.addEventListener('error', () => {
+                console.warn('⚠️ 音频加载失败，请确认文件名是否为 ' + MUSIC_FILE + ' 并放在仓库根目录');
+                isAudioLoaded = false;
+            });
+            bgAudio.addEventListener('canplaythrough', () => {
+                isAudioLoaded = true;
+            });
+
+            // ==================== 打开信封 ====================
+            function openEnvelope() {
+                if (isAnimating || isOpen) return;
+                isAnimating = true;
+
+                // 隐藏提示
+                hintLabel.classList.add('is-hidden');
+                // 暂停悬浮动画
+                envelopeWrapper.classList.add('is-opening');
+
+                // 阶段1：封口翻开 + 印章消失
+                envelopeWrapper.classList.add('flap-open');
+
+                // 阶段2：贺卡升起
+                setTimeout(() => {
+                    cardContainer.classList.add('risen');
+                    // 显示关闭按钮
+                    setTimeout(() => {
+                        closeBtnIcon.classList.add('visible-x');
+                    }, 350);
+                }, 400);
+
+                // 阶段3：播放音乐
+                setTimeout(() => {
+                    if (isAudioLoaded && bgAudio.src) {
+                        bgAudio.play().then(() => {
+                            updateAudioBtnState(true);
+                            console.log('🎶 音乐开始播放');
+                        }).catch(err => {
+                            console.warn('⚠️ 播放失败:', err.message);
+                            updateAudioBtnState(false);
+                        });
+                    }
+                    isOpen = true;
+                    isAnimating = false;
+                    envelopeWrapper.classList.remove('is-opening');
+                    envelopeWrapper.classList.add('is-opened');
+                }, 850);
+            }
+
+            // ==================== 关闭信封 ====================
+            function closeEnvelope() {
+                if (isAnimating || !isOpen) return;
+                isAnimating = true;
+
+                // 暂停音乐
+                if (!bgAudio.paused) {
+                    bgAudio.pause();
+                    updateAudioBtnState(false);
+                }
+
+                // 隐藏关闭按钮
+                closeBtnIcon.classList.remove('visible-x');
+
+                // 贺卡降下
+                cardContainer.classList.remove('risen');
+
+                // 封口闭合
+                setTimeout(() => {
+                    envelopeWrapper.classList.remove('flap-open');
+                    envelopeWrapper.classList.remove('is-opened');
+                }, 250);
+
+                // 恢复初始状态
+                setTimeout(() => {
+                    hintLabel.classList.remove('is-hidden');
+                    isOpen = false;
+                    isAnimating = false;
+                    resetLyricsState();
+                }, 750);
+            }
+
+            // ==================== 歌词同步 ====================
+            function resetLyricsState() {
+                currentLyricIdx = -1;
+                lyricRows.forEach(row => {
+                    row.classList.remove('active-lyric', 'past-lyric');
                 });
-                currentLyricIndex = activeIndex;
+                lyricsScroll.scrollTop = 0;
+                audioProgressFill.style.width = '0%';
             }
-            if (bgAudio.duration && isFinite(bgAudio.duration)) {
-                audioProgressFill.style.width = Math.min(100, (currentTime/bgAudio.duration)*100) + '%';
+
+            function syncLyrics(currentTime) {
+                let activeIdx = -1;
+                lyricRows.forEach((row, idx) => {
+                    const rowTime = parseFloat(row.getAttribute('data-time'));
+                    if (currentTime >= rowTime) {
+                        activeIdx = idx;
+                    }
+                });
+
+                if (activeIdx !== currentLyricIdx && activeIdx >= 0) {
+                    // 清除旧状态
+                    lyricRows.forEach(row => {
+                        row.classList.remove('active-lyric', 'past-lyric');
+                    });
+
+                    // 设置当前行
+                    const activeRow = lyricRows[activeIdx];
+                    activeRow.classList.add('active-lyric');
+
+                    // 标记已过去行
+                    for (let i = 0; i < activeIdx; i++) {
+                        lyricRows[i].classList.add('past-lyric');
+                    }
+
+                    // 滚动到当前行
+                    const containerH = lyricsScroll.clientHeight;
+                    const rowTop = activeRow.offsetTop;
+                    const rowH = activeRow.offsetHeight;
+                    const targetScroll = rowTop - containerH / 2 + rowH / 2;
+                    lyricsScroll.scrollTo({
+                        top: Math.max(0, targetScroll),
+                        behavior: 'smooth',
+                    });
+
+                    currentLyricIdx = activeIdx;
+                }
+
+                // 更新进度条
+                if (bgAudio.duration && isFinite(bgAudio.duration)) {
+                    const pct = (currentTime / bgAudio.duration) * 100;
+                    audioProgressFill.style.width = Math.min(100, pct) + '%';
+                }
             }
-        }
 
-        // ========== 音频控制 ==========
-        function updateAudioBtn(playing) {
-            audioBtn.textContent = playing ? '⏸' : '▶';
-            audioBtn.classList.toggle('playing', playing);
-        }
-        function toggleAudio() {
-            if (!bgAudio.src) return;
-            if (bgAudio.paused) {
-                bgAudio.play().then(() => updateAudioBtn(true)).catch(() => {});
-            } else {
-                bgAudio.pause();
-                updateAudioBtn(false);
+            // ==================== 音频按钮 ====================
+            function updateAudioBtnState(playing) {
+                if (playing) {
+                    audioPlayBtn.textContent = '⏸';
+                    audioPlayBtn.classList.add('is-playing');
+                } else {
+                    audioPlayBtn.textContent = '▶';
+                    audioPlayBtn.classList.remove('is-playing');
+                }
             }
-        }
 
-        // ========== 事件绑定 ==========
-        envelopeWrapper.addEventListener('click', (e) => {
-            if (e.target.closest('.close-btn') || e.target.closest('.audio-btn')) return;
-            if (!isEnvelopeOpen && !isAnimating) openEnvelope();
-        });
-        envelopeFlap.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (!isEnvelopeOpen && !isAnimating) openEnvelope();
-        });
-        closeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (isEnvelopeOpen && !isAnimating) closeEnvelope();
-        });
-        audioBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleAudio();
-        });
-        bgAudio.addEventListener('timeupdate', () => {
-            if (isEnvelopeOpen) updateLyrics(bgAudio.currentTime);
-        });
-        bgAudio.addEventListener('play', () => updateAudioBtn(true));
-        bgAudio.addEventListener('pause', () => updateAudioBtn(false));
-        bgAudio.addEventListener('ended', () => {
-            updateAudioBtn(false);
-            audioProgressFill.style.width = '100%';
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === ' ' || e.code === 'Space') {
-                e.preventDefault();
-                if (!isEnvelopeOpen && !isAnimating) openEnvelope();
-                else if (isEnvelopeOpen && !isAnimating) toggleAudio();
-            } else if (e.key === 'Escape' || e.code === 'Escape') {
-                if (isEnvelopeOpen && !isAnimating) closeEnvelope();
+            function toggleAudio() {
+                if (!bgAudio.src || !isAudioLoaded) {
+                    console.warn('⚠️ 音频未就绪');
+                    return;
+                }
+                if (bgAudio.paused) {
+                    bgAudio.play().then(() => updateAudioBtnState(true)).catch(() => {});
+                } else {
+                    bgAudio.pause();
+                    updateAudioBtnState(false);
+                }
             }
-        });
 
-        console.log('💌 生日贺卡已就绪 — 音乐文件：' + MUSIC_FILE);
-    })();
-</script>
+            // ==================== 事件绑定 ====================
+            // 点击信封打开
+            envelopeWrapper.addEventListener('click', (e) => {
+                if (e.target.closest('.close-btn-icon') || e.target.closest('.audio-play-btn')) {
+                    return;
+                }
+                if (!isOpen && !isAnimating) {
+                    openEnvelope();
+                }
+            });
+
+            // 点击封口也可打开
+            envelopeFlap.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!isOpen && !isAnimating) {
+                    openEnvelope();
+                }
+            });
+
+            // 关闭按钮
+            closeBtnIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (isOpen && !isAnimating) {
+                    closeEnvelope();
+                }
+            });
+
+            // 音频按钮
+            audioPlayBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleAudio();
+            });
+
+            // 音频时间更新 → 同步歌词
+            bgAudio.addEventListener('timeupdate', () => {
+                if (isOpen) {
+                    syncLyrics(bgAudio.currentTime);
+                }
+            });
+
+            // 音频播放状态
+            bgAudio.addEventListener('play', () => updateAudioBtnState(true));
+            bgAudio.addEventListener('pause', () => updateAudioBtnState(false));
+            bgAudio.addEventListener('ended', () => {
+                updateAudioBtnState(false);
+                audioProgressFill.style.width = '100%';
+            });
+
+            // 键盘控制
+            document.addEventListener('keydown', (e) => {
+                if (e.key === ' ' || e.code === 'Space') {
+                    e.preventDefault();
+                    if (!isOpen && !isAnimating) {
+                        openEnvelope();
+                    } else if (isOpen && !isAnimating && isAudioLoaded) {
+                        toggleAudio();
+                    }
+                } else if (e.key === 'Escape' || e.code === 'Escape') {
+                    if (isOpen && !isAnimating) {
+                        closeEnvelope();
+                    }
+                }
+            });
+
+            // 双击信封也可打开
+            envelopeWrapper.addEventListener('dblclick', (e) => {
+                if (!isOpen && !isAnimating) {
+                    openEnvelope();
+                }
+            });
+
+            // ==================== 启动日志 ====================
+            console.log('💌 生日贺卡已就绪');
+            console.log('   👆 点击信封打开贺卡');
+            console.log('   🎵 音乐将在信封打开时播放');
+            console.log('   ⌨ 空格键 = 打开/播放 | Esc = 关闭');
+            console.log('   📱 支持移动端触摸');
+            console.log('   🎂 祝爸爸生日快乐！');
+        })();
+    </script>
 </body>
 </html>
