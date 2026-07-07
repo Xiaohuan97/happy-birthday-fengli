@@ -57,13 +57,7 @@
             backface-visibility: hidden;
         }
         
-        /* 邮票移到左上角，彻底避开边缘切角问题！ */
-        .envelope-flap::before {
-            content: '生日快乐'; position: absolute; top: 12px; left: 12px; /* 移到左边安全区域 */
-            border: 1.5px dashed #c0392b; padding: 2px 4px; font-size: 0.7rem; 
-            color: #c0392b; background: #fcf6e7; border-radius: 2px;
-            transform: rotate(-6deg); /* 稍微向左倾斜 */
-        }
+        /* ⚠️ 已删除：防止“生日快乐”字样因边缘渲染导致缺失，现已彻底移除 */
 
         .envelope-wrapper.flap-open .envelope-flap {
             transform: rotateX(-180deg); z-index: 0; box-shadow: 0 6px 18px rgba(0,0,0,0.15);
@@ -98,7 +92,6 @@
         .card-blessing .greeting { font-size: 0.95rem; color: #3a2f28; line-height: 2.2; letter-spacing: 0.03em; }
         .card-blessing .greeting .red { color: #c0392b; font-weight: 600; }
         .card-blessing .signature { margin-top: 16px; font-size: 1.1rem; color: #5a4a3a; text-align: right; }
-        .card-blessing .date { font-size: 0.7rem; color: #7a6a55; text-align: right; margin-top: 2px; }
 
         /* 分隔音符 */
         .divider { width: 55%; margin: 8px auto 6px; height: 1px; background: linear-gradient(90deg, transparent, rgba(180,140,100,0.45), transparent); position: relative; }
@@ -123,7 +116,6 @@
             .card-blessing .title { font-size: 1.8rem; }
             .card-blessing .greeting { font-size: 0.85rem; line-height: 1.8; }
             .seal { width: 28px; height: 28px; }
-            .envelope-flap::before { top: 8px; left: 8px; font-size: 0.55rem; padding: 2px 4px; transform: rotate(-4deg); }
             .envelope-body::after { font-size: 1.2rem; }
         }
     </style>
@@ -153,7 +145,6 @@
                         愿幸福与温暖常伴您左右。<br>无论我走到哪里，<br>您永远是我心中最坚实的依靠。
                     </div>
                     <div class="signature">—— 永远爱您的孩子</div>
-                    <div class="date" id="dateDisplay"></div>
                 </div>
 
                 <div class="divider"></div>
@@ -179,10 +170,6 @@
             const bgAudio = document.getElementById('bgAudio');
             const audioBtn = document.getElementById('audioBtn');
             const progressFill = document.getElementById('progressFill');
-            const dateDisplay = document.getElementById('dateDisplay');
-
-            const now = new Date();
-            dateDisplay.textContent = now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日';
 
             let isOpen = false, isAnimating = false, isAudioReady = false;
             let musicTriggered = false;
@@ -214,7 +201,7 @@
                 tryPlayMusic();
                 
                 setTimeout(() => {
-                    // 【绝对修复2】：强制物理移除信封元素，无论什么浏览器都绝对不会残留米色空块！
+                    // 绝对修复：强制物理移除信封元素
                     envelopeWrapper.style.display = 'none'; 
                     cardWrapper.classList.add('visible');
                     hintText.classList.add('hidden');
@@ -228,7 +215,7 @@
                 isAnimating = true; isOpen = false; musicTriggered = false;
                 bgAudio.pause(); updateAudioBtn(false);
                 cardWrapper.classList.remove('visible');
-                // 重新恢复信封显示（如果之前被隐藏了）
+                // 重新恢复信封显示
                 envelopeWrapper.style.display = ''; 
                 envelopeWrapper.classList.remove('envelope-hidden', 'flap-open');
                 hintText.classList.remove('hidden');
