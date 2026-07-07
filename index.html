@@ -6,11 +6,10 @@
     <title>生日快乐 - 给爸爸</title>
     <style>
         :root {
-            --bg-warm: #f5efe6;
+            --bg-warm: #f7f2e9;
             --envelope-body: #e8d5b5;
             --envelope-flap: #dcc8a4;
-            --envelope-dark: #c9a87c;
-            --card-bg: #fefdfb;
+            --card-bg: #ffffff;
             --text-dark: #3a2f28;
             --text-medium: #5a4a3a;
             --text-light: #7a6a55;
@@ -29,7 +28,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(160deg, #f5efe6 0%, #efe4d4 20%, #e8ddd0 40%, #f0e6d8 60%, #f5efe6 80%, #ece0d2 100%);
+            background-color: #f5efe6;
+            background-image: radial-gradient(ellipse at 50% 50%, #fdfaf5 0%, #f5efe6 60%, #ede3d3 100%);
             font-family: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', serif;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
@@ -38,24 +38,23 @@
             cursor: default;
         }
 
-        /* ========== 主场景 ========== */
+        /* 主场景垂直居中 */
         .scene {
-            position: relative;
-            z-index: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            width: 100%;
+            padding: 20px 10px;
         }
 
-        /* ========== 信封容器 ========== */
+        /* ========== 信封容器（初始显示） ========== */
         .envelope-wrapper {
             position: relative;
             width: 380px;
             height: 260px;
             cursor: pointer;
-            z-index: 10;
-            transition: transform 0.3s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease;
             animation: gentleFloat 4s ease-in-out infinite;
         }
         @keyframes gentleFloat {
@@ -71,15 +70,11 @@
             animation-play-state: paused;
             transform: translateY(-10px);
         }
-        .envelope-wrapper.envelope-opening {
-            pointer-events: none;
-            animation-play-state: paused;
-        }
-        .envelope-wrapper.envelope-gone {
+        .envelope-wrapper.envelope-hidden {
             opacity: 0;
             pointer-events: none;
             transform: scale(0.8);
-            transition: opacity 0.5s ease 0.6s, transform 0.5s ease 0.6s;
+            animation-play-state: paused;
         }
 
         /* 信封主体 */
@@ -89,17 +84,15 @@
             left: 0;
             width: 100%;
             height: 70%;
-            background: linear-gradient(175deg,
-                    #f0e2cd 0%, #e8d5b5 15%, #dcc49d 50%, #e0caa8 85%, #e8d5b5 100%);
+            background: linear-gradient(175deg, #f0e2cd 0%, #e8d5b5 15%, #dcc49d 50%, #e0caa8 85%, #e8d5b5 100%);
             border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
             z-index: 3;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(180, 150, 120, 0.3);
+            border: 1px solid rgba(180, 150, 120, 0.25);
         }
-        /* 信封内框装饰 */
         .envelope-body::before {
             content: '';
             position: absolute;
@@ -108,10 +101,9 @@
             right: 8px;
             bottom: 8px;
             border-radius: 5px;
-            border: 1.2px solid rgba(175, 145, 115, 0.25);
+            border: 1.2px solid rgba(175, 145, 115, 0.2);
             pointer-events: none;
         }
-        /* 装饰横线 */
         .envelope-lines {
             position: absolute;
             top: 50%;
@@ -124,7 +116,7 @@
         }
         .envelope-lines span {
             height: 1.2px;
-            background: rgba(155, 125, 95, 0.3);
+            background: rgba(155, 125, 95, 0.25);
             border-radius: 1px;
             display: block;
         }
@@ -140,17 +132,15 @@
             width: 60%;
             margin: 0 auto;
         }
-        /* 信封文字 */
         .envelope-address {
             position: absolute;
             top: 30%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
-            pointer-events: none;
             font-size: 1.4rem;
-            color: rgba(115, 85, 55, 0.65);
-            letter-spacing: 0.14em;
+            color: rgba(115, 85, 55, 0.6);
+            letter-spacing: 0.12em;
             white-space: nowrap;
         }
 
@@ -169,7 +159,7 @@
             align-items: center;
             justify-content: center;
             border-radius: 3px;
-            box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.08);
         }
         .stamp-inner {
             width: 75%;
@@ -182,7 +172,9 @@
             color: #b8862d;
             font-weight: 700;
             writing-mode: vertical-rl;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
+            text-align: center;
+            line-height: 1.3;
         }
 
         /* 封口三角盖 */
@@ -196,9 +188,9 @@
             clip-path: polygon(0 0, 50% 100%, 100% 0);
             z-index: 6;
             transform-origin: top center;
-            transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.1, 1);
+            transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1);
             border-radius: 8px 8px 0 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             cursor: pointer;
         }
         .envelope-flap::after {
@@ -209,16 +201,15 @@
             right: 0;
             bottom: 0;
             clip-path: polygon(0 0, 50% 100%, 100% 0);
-            border: 1.2px solid rgba(175, 145, 115, 0.25);
+            border: 1.2px solid rgba(175, 145, 115, 0.2);
             border-bottom: none;
             border-radius: 8px 8px 0 0;
             pointer-events: none;
         }
-        /* 封口翻开 */
         .envelope-wrapper.flap-open .envelope-flap {
             transform: rotateX(-180deg);
             z-index: 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         /* 火漆圆章 */
@@ -233,30 +224,30 @@
             border-radius: 50%;
             z-index: 7;
             pointer-events: none;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.2);
             transition: all 0.5s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .seal::before {
-            content: '♡';
+            content: '♥';
+            /* 安全的心形符号 */;
             font-size: 0.85rem;
             color: rgba(255, 255, 255, 0.6);
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
         }
         .envelope-wrapper.flap-open .seal {
             opacity: 0;
             transform: translate(-50%, -50%) scale(0.3);
         }
 
-        /* ========== 贺卡 ========== */
+        /* ========== 贺卡容器（初始隐藏） ========== */
         .card-wrapper {
             display: none;
-            /* ���� 初始完全隐藏 */;
             width: 380px;
-            max-height: 75vh;
-            z-index: 20;
-            animation: cardAppear 0.6s ease-out forwards;
+            max-width: 92vw;
+            animation: cardAppear 0.5s ease-out forwards;
         }
         .card-wrapper.visible {
             display: block;
@@ -264,7 +255,7 @@
         @keyframes cardAppear {
             0% {
                 opacity: 0;
-                transform: translateY(30px) scale(0.95);
+                transform: translateY(20px) scale(0.96);
             }
             100% {
                 opacity: 1;
@@ -273,9 +264,9 @@
         }
 
         .card {
-            background: #fefdfb;
+            background: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             border: 1px solid rgba(180, 150, 120, 0.15);
             display: flex;
@@ -288,40 +279,41 @@
             left: 10px;
             right: 10px;
             bottom: 10px;
-            border: 1.2px solid rgba(180, 150, 120, 0.25);
+            border: 1.2px solid rgba(180, 150, 120, 0.2);
             border-radius: 6px;
             pointer-events: none;
         }
 
-        /* 祝福区 */
         .card-blessing {
             padding: 28px 22px 16px;
             text-align: center;
             position: relative;
             z-index: 2;
         }
-        .card-blessing .icon {
+        .card-blessing .icon-top {
             font-size: 2rem;
             margin-bottom: 4px;
+            /* 使用安全的蛋糕符号 */;
+            display: block;
         }
         .card-blessing .title {
             font-size: 2rem;
             color: #c0392b;
             font-weight: 700;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.08em;
             margin-bottom: 4px;
         }
         .card-blessing .subtitle {
             font-size: 0.9rem;
             color: #b8862d;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
             margin-bottom: 12px;
         }
         .card-blessing .greeting {
             font-size: 0.95rem;
             color: #3a2f28;
             line-height: 2;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.03em;
         }
         .card-blessing .greeting .red {
             color: #c0392b;
@@ -332,7 +324,7 @@
             font-size: 1.1rem;
             color: #5a4a3a;
             text-align: right;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.05em;
         }
         .card-blessing .date {
             font-size: 0.7rem;
@@ -341,13 +333,13 @@
             margin-top: 2px;
         }
 
-        /* 分隔 */
         .divider {
             width: 50%;
             margin: 0 auto;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(180, 140, 100, 0.5), transparent);
+            background: linear-gradient(90deg, transparent, rgba(180, 140, 100, 0.4), transparent);
             position: relative;
+            flex-shrink: 0;
         }
         .divider::after {
             content: '♪';
@@ -355,21 +347,20 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #fefdfb;
+            background: #ffffff;
             padding: 0 12px;
             color: #b8862d;
             font-size: 0.8rem;
         }
 
-        /* 歌词区 */
         .card-lyrics {
             padding: 10px 18px 12px;
-            background: #faf7f2;
+            background: #fefcf9;
             max-height: 220px;
             overflow-y: auto;
             scroll-behavior: smooth;
             scrollbar-width: thin;
-            scrollbar-color: rgba(180, 150, 120, 0.25) transparent;
+            scrollbar-color: rgba(180, 150, 120, 0.2) transparent;
             position: relative;
             z-index: 2;
         }
@@ -377,14 +368,14 @@
             width: 3px;
         }
         .card-lyrics::-webkit-scrollbar-thumb {
-            background: rgba(180, 150, 120, 0.25);
+            background: rgba(180, 150, 120, 0.2);
             border-radius: 3px;
         }
         .lyric-label {
             text-align: center;
             font-size: 0.65rem;
             color: #7a6a55;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             margin-bottom: 6px;
         }
         .lyric-row {
@@ -404,11 +395,10 @@
             background: rgba(192, 57, 43, 0.04);
         }
         .lyric-row.past {
-            color: rgba(120, 100, 80, 0.35);
+            color: rgba(120, 100, 80, 0.3);
             font-size: 0.75rem;
         }
 
-        /* 音频条 */
         .audio-bar {
             display: flex;
             align-items: center;
@@ -417,18 +407,21 @@
             padding: 6px 0 4px;
             position: relative;
             z-index: 2;
-            background: #faf7f2;
+            background: #fefcf9;
         }
         .audio-btn {
             width: 30px;
             height: 30px;
             border-radius: 50%;
             border: 1.5px solid rgba(180, 150, 120, 0.5);
-            background: #fff;
+            background: #ffffff;
             cursor: pointer;
             font-size: 0.75rem;
             color: #5a4a3a;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .audio-btn.playing {
             background: #c0392b;
@@ -438,7 +431,7 @@
         .progress-track {
             width: 70px;
             height: 3px;
-            background: rgba(180, 150, 120, 0.25);
+            background: rgba(180, 150, 120, 0.2);
             border-radius: 2px;
             overflow: hidden;
         }
@@ -451,24 +444,23 @@
 
         /* 底部提示 */
         .hint {
-            margin-top: 16px;
-            font-size: 0.78rem;
-            color: rgba(140, 110, 80, 0.6);
-            letter-spacing: 0.08em;
-            animation: hintPulse 2s infinite ease-in-out;
-            z-index: 0;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: rgba(140, 110, 80, 0.55);
+            letter-spacing: 0.06em;
+            animation: hintPulse 2.2s infinite ease-in-out;
         }
         @keyframes hintPulse {
             0%,
             100% {
-                opacity: 0.45;
+                opacity: 0.4;
             }
             50% {
-                opacity: 1;
+                opacity: 0.9;
             }
         }
         .hint.hidden {
-            display: none;
+            visibility: hidden;
         }
 
         /* 响应式 */
@@ -517,11 +509,9 @@
 </head>
 <body>
 
-    <!-- 主场景 -->
     <div class="scene">
-
-        <!-- 信封（初始唯一可见元素） -->
-        <div class="envelope-wrapper" id="envelopeWrapper" title="点击打开信封">
+        <!-- 信封（初始可见） -->
+        <div class="envelope-wrapper" id="envelopeWrapper">
             <div class="envelope-body">
                 <div class="envelope-lines">
                     <span></span><span></span><span></span>
@@ -535,11 +525,11 @@
             <div class="seal" id="seal"></div>
         </div>
 
-        <!-- 贺卡（初始 display:none 完全隐藏） -->
+        <!-- 贺卡（初始隐藏） -->
         <div class="card-wrapper" id="cardWrapper">
             <div class="card">
                 <div class="card-blessing">
-                    <div class="icon">����</div>
+                    <span class="icon-top">����</span>
                     <div class="title">生 日 快 乐</div>
                     <div class="subtitle">—— 致我最敬爱的爸爸 ——</div>
                     <div class="greeting">
@@ -561,7 +551,7 @@
                 </div>
                 <div class="divider"></div>
                 <div class="card-lyrics" id="lyricsScroll">
-                    <div class="lyric-label">���� 生日感恩暖阳</div>
+                    <div class="lyric-label">生日感恩暖阳</div>
                     <div class="lyric-row" data-time="0">— ♪ 生日感恩暖阳 ♪ —</div>
                     <div class="lyric-row" data-time="4.2">晨光爬过粥锅沿</div>
                     <div class="lyric-row" data-time="7.5">您擦胡茬笑眼弯</div>
@@ -592,21 +582,19 @@
             </div>
         </div>
 
-        <!-- 底部提示 -->
-        <div class="hint" id="hintText">���� 点击信封打开贺卡</div>
+        <div class="hint" id="hintText">点击信封打开贺卡</div>
     </div>
 
     <audio id="bgAudio" preload="auto" loop></audio>
 
     <script>
         (function() {
-            // 音乐文件（放在仓库根目录，命名为 birthday-song.mp3）
-            const MUSIC_FILE = 'birthday-song.mp3';
+            // 音乐文件路径（确保已上传 father-song.mp3 到仓库根目录）
+            const MUSIC_FILE = 'father-song.mp3';
 
-            // DOM
+            // DOM 元素
             const envelopeWrapper = document.getElementById('envelopeWrapper');
             const envelopeFlap = document.getElementById('envelopeFlap');
-            const seal = document.getElementById('seal');
             const cardWrapper = document.getElementById('cardWrapper');
             const hintText = document.getElementById('hintText');
             const bgAudio = document.getElementById('bgAudio');
@@ -616,8 +604,9 @@
             const lyricRows = document.querySelectorAll('.lyric-row');
             const dateDisplay = document.getElementById('dateDisplay');
 
-            dateDisplay.textContent =
-                `${new Date().getFullYear()}年${new Date().getMonth()+1}月${new Date().getDate()}日`;
+            // 设置日期
+            const now = new Date();
+            dateDisplay.textContent = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
 
             let isOpen = false;
             let isAnimating = false;
@@ -627,9 +616,41 @@
             // 初始化音频
             bgAudio.src = MUSIC_FILE;
             bgAudio.load();
-            bgAudio.addEventListener('loadeddata', () => { isAudioReady = true; });
-            bgAudio.addEventListener('canplaythrough', () => { isAudioReady = true; });
-            bgAudio.addEventListener('error', () => { isAudioReady = false; });
+
+            bgAudio.addEventListener('loadeddata', () => {
+                isAudioReady = true;
+                console.log('✅ 音频数据已加载，可以播放');
+            });
+            bgAudio.addEventListener('canplaythrough', () => {
+                isAudioReady = true;
+                console.log('✅ 音频可以流畅播放');
+            });
+            bgAudio.addEventListener('error', (e) => {
+                console.error('❌ 音频加载失败，请检查文件路径：', MUSIC_FILE);
+                isAudioReady = false;
+            });
+
+            // 安全播放音乐（必须在用户手势中调用）
+            function tryPlayMusic() {
+                console.log('���� 音乐正在尝试播放...');
+                if (!bgAudio.src) {
+                    console.warn('⚠️ 未设置音频源');
+                    return;
+                }
+                // 重置播放位置（如果已播放过）
+                bgAudio.currentTime = 0;
+                const playPromise = bgAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log('▶️ 音乐播放成功');
+                        updateAudioBtn(true);
+                    }).catch(err => {
+                        console.warn('⚠️ 播放被拦截或出错:', err.message);
+                        // 尝试静音自动播放被拒后，可以提示用户手动点击播放按钮
+                        updateAudioBtn(false);
+                    });
+                }
+            }
 
             // 打开信封
             function openEnvelope() {
@@ -637,29 +658,22 @@
                 isAnimating = true;
                 isOpen = true;
 
-                // 1. 封口翻开
+                // 1. 信封封口动画
                 envelopeWrapper.classList.add('flap-open');
-                envelopeWrapper.classList.add('envelope-opening');
 
-                // 2. 0.6秒后隐藏信封、显示贺卡
+                // 2. 关键：在同一个用户手势中立即调用音乐播放
+                tryPlayMusic();
+
+                // 3. 动画结束后切换显示
                 setTimeout(() => {
-                    envelopeWrapper.classList.add('envelope-gone');
+                    envelopeWrapper.classList.add('envelope-hidden');
                     cardWrapper.classList.add('visible');
                     hintText.classList.add('hidden');
-
-                    // 3. 播放音乐
-                    if (isAudioReady && bgAudio.src) {
-                        bgAudio.play().then(() => updateAudioBtn(true)).catch(() => {});
-                    }
-                }, 600);
-
-                // 3. 动画结束后清理状态
-                setTimeout(() => {
                     isAnimating = false;
-                }, 900);
+                }, 600);
             }
 
-            // 关闭贺卡（点击背景或按Esc触发，这里简单做：双击贺卡区域关闭）
+            // 关闭贺卡（双击贺卡或按Esc）
             function closeCard() {
                 if (isAnimating || !isOpen) return;
                 isAnimating = true;
@@ -670,7 +684,7 @@
                 resetLyrics();
 
                 cardWrapper.classList.remove('visible');
-                envelopeWrapper.classList.remove('envelope-gone', 'flap-open', 'envelope-opening');
+                envelopeWrapper.classList.remove('envelope-hidden', 'flap-open');
                 hintText.classList.remove('hidden');
 
                 setTimeout(() => {
@@ -678,7 +692,7 @@
                 }, 500);
             }
 
-            // 歌词同步
+            // 歌词重置
             function resetLyrics() {
                 currentLyricIdx = -1;
                 lyricRows.forEach(r => r.classList.remove('active', 'past'));
@@ -693,14 +707,18 @@
                 });
                 if (activeIdx !== currentLyricIdx && activeIdx >= 0) {
                     lyricRows.forEach(r => r.classList.remove('active', 'past'));
-                    const active = lyricRows[activeIdx];
-                    active.classList.add('active');
-                    for (let i = 0; i < activeIdx; i++) lyricRows[i].classList.add('past');
+                    const activeRow = lyricRows[activeIdx];
+                    activeRow.classList.add('active');
+                    for (let i = 0; i < activeIdx; i++) {
+                        lyricRows[i].classList.add('past');
+                    }
                     const containerH = lyricsScroll.clientHeight;
-                    const top = active.offsetTop;
-                    const h = active.offsetHeight;
-                    lyricsScroll.scrollTo({ top: Math.max(0, top - containerH / 2 + h / 2),
-                        behavior: 'smooth' });
+                    const top = activeRow.offsetTop;
+                    const h = activeRow.offsetHeight;
+                    lyricsScroll.scrollTo({
+                        top: Math.max(0, top - containerH / 2 + h / 2),
+                        behavior: 'smooth'
+                    });
                     currentLyricIdx = activeIdx;
                 }
                 if (bgAudio.duration && isFinite(bgAudio.duration)) {
@@ -715,36 +733,44 @@
 
             function toggleAudio() {
                 if (!isAudioReady || !bgAudio.src) return;
-                if (bgAudio.paused) bgAudio.play().then(() => updateAudioBtn(true)).catch(() => {});
-                else { bgAudio.pause();
-                    updateAudioBtn(false); }
+                if (bgAudio.paused) {
+                    bgAudio.play().then(() => updateAudioBtn(true)).catch(() => {});
+                } else {
+                    bgAudio.pause();
+                    updateAudioBtn(false);
+                }
             }
 
-            // 事件
-            envelopeWrapper.addEventListener('click', () => {
+            // 事件绑定
+            envelopeWrapper.addEventListener('click', (e) => {
                 if (!isOpen && !isAnimating) openEnvelope();
             });
             envelopeFlap.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (!isOpen && !isAnimating) openEnvelope();
             });
-            audioBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleAudio();
-            });
+
             // 双击贺卡关闭
             cardWrapper.addEventListener('dblclick', () => {
                 if (isOpen && !isAnimating) closeCard();
             });
+
+            audioBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleAudio();
+            });
+
             bgAudio.addEventListener('timeupdate', () => {
                 if (isOpen) syncLyrics(bgAudio.currentTime);
             });
             bgAudio.addEventListener('play', () => updateAudioBtn(true));
             bgAudio.addEventListener('pause', () => updateAudioBtn(false));
-            bgAudio.addEventListener('ended', () => { updateAudioBtn(false);
-                progressFill.style.width = '100%'; });
+            bgAudio.addEventListener('ended', () => {
+                updateAudioBtn(false);
+                progressFill.style.width = '100%';
+            });
 
-            // 键盘
+            // 键盘控制
             document.addEventListener('keydown', (e) => {
                 if (e.key === ' ' || e.code === 'Space') {
                     e.preventDefault();
@@ -755,7 +781,7 @@
                 }
             });
 
-            console.log('���� 生日贺卡就绪 - 初始仅显示信封');
+            console.log('���� 生日贺卡已就绪，点击信封开始');
         })();
     </script>
 </body>
