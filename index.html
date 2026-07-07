@@ -33,8 +33,7 @@
             width: 40px; height: 40px; 
             top: -50px; 
             background-size: contain; background-position: center; background-repeat: no-repeat;
-            border-radius: 50%; /* 强制变成圆形 */
-            overflow: hidden; /* 核心修复：保证超出圆形的部分被完全裁掉，绝不会留白块 */
+            /* 关键修复：取消圆形裁切，利用透明PNG自然显示，彻底杜绝灰块Bug */
             background-color: transparent;
             animation: cakeFall 10s linear infinite;
             filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15)); 
@@ -50,7 +49,6 @@
         .cake-bg span:nth-child(7) { left: 5%; width: 50px; height: 50px; background-image: url('cake3.png'); animation-delay: 7s; animation-duration: 15s; }
         .cake-bg span:nth-child(8) { left: 50%; width: 30px; height: 30px; background-image: url('cake4.png'); animation-delay: 6s; animation-duration: 8s; }
 
-        /* 完美向下的掉落动画 */
         @keyframes cakeFall {
             0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0.2; }
             100% { transform: translateY(115vh) rotate(720deg) scale(1.2); opacity: 1; }
@@ -92,7 +90,10 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.08); cursor: pointer; backface-visibility: hidden;
         }
         .envelope-wrapper.flap-open .envelope-flap {
-            transform: rotateX(-180deg); z-index: 0; box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+            transform: rotateX(-180deg);
+            z-index: 0;
+            box-shadow: none;
+            opacity: 0; /* 绝对修复：翻过去后直接隐藏，杜绝任何白色渲染残影 */
         }
 
         .seal {
@@ -147,6 +148,7 @@
             .card-blessing .greeting { font-size: 0.85rem; line-height: 1.8; }
             .seal { width: 28px; height: 28px; }
             .envelope-body::after { font-size: 1.2rem; }
+            .audio-bar { margin-bottom: 20px; } /* 手机底部增加避让空间 */
         }
     </style>
 </head>
