@@ -10,7 +10,6 @@
             min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
             background-color: #f5efe6;
-            background-image: radial-gradient(ellipse at 50% 50%, #fdfaf5 0%, #f5efe6 60%, #ede3d3 100%);
             font-family: 'KaiTi', 'STKaiti', '华文楷体', 'Noto Serif SC', serif;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
@@ -18,31 +17,30 @@
             padding: 20px;
         }
 
-        /* ==================== 蛋糕特效 ==================== */
+        /* ==================== 轻量蛋糕掉落特效 ==================== */
         .cake-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             overflow: hidden; pointer-events: none; z-index: 9999; 
-            will-change: transform; display: none;
+            display: none;
         }
         .cake-bg.active { display: block; }
         .cake-bg span {
-            position: absolute; display: block; width: 40px; height: 40px; top: -50px; 
+            position: absolute; display: block; width: 30px; height: 30px; top: -50px; 
             background-size: contain; background-position: center; background-repeat: no-repeat;
-            background-color: transparent;
             animation: cakeFall 10s linear infinite;
-            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15)); 
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.1)); 
         }
-        .cake-bg span:nth-child(1) { left: 10%; width: 30px; height: 30px; background-image: url('cake1.png'); animation-delay: 0s; animation-duration: 12s; }
-        .cake-bg span:nth-child(2) { left: 25%; width: 50px; height: 50px; background-image: url('cake2.png'); animation-delay: 2s; animation-duration: 9s; }
-        .cake-bg span:nth-child(3) { left: 40%; width: 40px; height: 40px; background-image: url('cake3.png'); animation-delay: 4s; animation-duration: 14s; }
-        .cake-bg span:nth-child(4) { left: 60%; width: 55px; height: 55px; background-image: url('cake4.png'); animation-delay: 1s; animation-duration: 10s; }
-        .cake-bg span:nth-child(5) { left: 75%; width: 35px; height: 35px; background-image: url('cake1.png'); animation-delay: 3s; animation-duration: 13s; }
-        .cake-bg span:nth-child(6) { left: 90%; width: 45px; height: 45px; background-image: url('cake2.png'); animation-delay: 5s; animation-duration: 11s; }
-        .cake-bg span:nth-child(7) { left: 5%; width: 50px; height: 50px; background-image: url('cake3.png'); animation-delay: 7s; animation-duration: 15s; }
-        .cake-bg span:nth-child(8) { left: 50%; width: 30px; height: 30px; background-image: url('cake4.png'); animation-delay: 6s; animation-duration: 8s; }
+        .cake-bg span:nth-child(1) { left: 10%; width: 25px; height: 25px; background-image: url('cake1.png'); animation-delay: 0s; animation-duration: 12s; }
+        .cake-bg span:nth-child(2) { left: 25%; width: 40px; height: 40px; background-image: url('cake2.png'); animation-delay: 2s; animation-duration: 9s; }
+        .cake-bg span:nth-child(3) { left: 40%; width: 35px; height: 35px; background-image: url('cake3.png'); animation-delay: 4s; animation-duration: 14s; }
+        .cake-bg span:nth-child(4) { left: 60%; width: 45px; height: 45px; background-image: url('cake4.png'); animation-delay: 1s; animation-duration: 10s; }
+        .cake-bg span:nth-child(5) { left: 75%; width: 30px; height: 30px; background-image: url('cake1.png'); animation-delay: 3s; animation-duration: 13s; }
+        .cake-bg span:nth-child(6) { left: 90%; width: 40px; height: 40px; background-image: url('cake2.png'); animation-delay: 5s; animation-duration: 11s; }
+        .cake-bg span:nth-child(7) { left: 5%; width: 45px; height: 45px; background-image: url('cake3.png'); animation-delay: 7s; animation-duration: 15s; }
+        .cake-bg span:nth-child(8) { left: 50%; width: 25px; height: 25px; background-image: url('cake4.png'); animation-delay: 6s; animation-duration: 8s; }
         @keyframes cakeFall {
             0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0.2; }
-            100% { transform: translateY(115vh) rotate(720deg) scale(1.2); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg) scale(1.2); opacity: 1; }
         }
 
         .scene {
@@ -51,100 +49,120 @@
             position: relative; z-index: 1;
         }
 
-        /* ==================== 替换为新生成的信封图片 ==================== */
+        /* ==================== 纯CSS信封（绝不卡顿，瞬间加载） ==================== */
         .envelope-wrapper {
-            position: relative; width: 380px; max-width: 90vw; height: 260px;
-            background-image: url('envelope-closed.png');
-            background-size: contain; background-position: center; background-repeat: no-repeat;
-            cursor: pointer; transition: opacity 0.5s ease, transform 0.5s ease;
+            position: relative; width: 320px; max-width: 85vw; height: 220px;
+            cursor: pointer; transition: opacity 0.5s ease;
             animation: gentleFloat 4s ease-in-out infinite;
         }
         @keyframes gentleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .envelope-wrapper:hover { animation-play-state: paused; }
         .envelope-wrapper.envelope-hidden { display: none !important; }
 
-        /* ==================== 新版翻页贺卡结构 ==================== */
-        .card-wrapper { display: none; width: 380px; max-width: 90vw; flex-direction: column; align-items: center; }
+        .env-body {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
+            background: linear-gradient(135deg, #ebd6b0 0%, #dab88b 100%);
+            border-radius: 6px; box-shadow: 0 8px 28px rgba(0,0,0,0.14); z-index: 3;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .env-body::after {
+            content: '致·亲爱的爸爸'; color: #5a3f28; font-size: 1.4rem;
+            font-weight: bold; letter-spacing: 0.08em; opacity: 0.9;
+        }
+
+        .env-flap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 48%;
+            background: linear-gradient(180deg, #f3e6d2 0%, #e8d5b5 15%, #dfcaa6 40%, #d9c29d 65%, #dcc7a4 100%);
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            z-index: 6; transform-origin: top center;
+            transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1);
+            backface-visibility: hidden;
+        }
+        /* 小邮票 */
+        .env-flap::after {
+            content: '生日快乐'; position: absolute; top: 10px; right: 10px;
+            border: 1.5px dashed #c0392b; padding: 2px 5px; font-size: 0.6rem; 
+            color: #c0392b; background: #fcf6e7; border-radius: 2px; transform: rotate(8deg);
+        }
+        .envelope-wrapper.flap-open .env-flap { transform: rotateX(-180deg); opacity: 0; }
+
+        .env-seal {
+            position: absolute; top: 56%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px;
+            background: radial-gradient(ellipse at 35% 30%, #e74c3c 0%, #c0392b 40%, #8b1a1a 100%);
+            border-radius: 50%; z-index: 7; pointer-events: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.28); transition: all 0.5s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .env-seal::before { content: '♥'; font-size: 0.8rem; color: rgba(255,255,255,0.7); }
+        .envelope-wrapper.flap-open .env-seal { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+
+        /* ==================== 新版翻页贺卡（超大关怀版字体） ==================== */
+        .card-wrapper { display: none; width: 340px; max-width: 95vw; }
         .card-wrapper.visible { display: flex; animation: cardAppear 0.5s ease-out forwards; }
         @keyframes cardAppear { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
 
         .card {
-            background: #fefcf8; border: 10px solid transparent;
-            border-image: repeating-linear-gradient(45deg, #c9a468, #c9a468 10px, transparent 10px, transparent 12px) 10;
+            background: #fefcf8; border: 8px solid transparent;
+            border-image: repeating-linear-gradient(45deg, #c9a468, #c9a468 8px, transparent 8px, transparent 10px) 8;
             box-shadow: 0 8px 32px rgba(0,0,0,0.12); border-radius: 12px;
             width: 100%; display: flex; flex-direction: column; position: relative;
+            padding: 20px 16px 18px;
         }
 
-        /* 【1. 固定的页眉】 */
-        .card-header {
-            padding: 28px 20px 0; text-align: center;
-            position: relative; z-index: 2; flex-shrink: 0;
-        }
-        .card-header .title { font-size: 2.2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
-        .card-header .subtitle { font-size: 0.9rem; color: #b8862d; letter-spacing: 0.1em; margin-bottom: 16px; }
+        .card-header { text-align: center; padding-bottom: 16px; }
+        .card-header .title { font-size: 2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+        .card-header .subtitle { font-size: 0.85rem; color: #b8862d; letter-spacing: 0.1em; }
 
-        /* 【2. 可翻页的正文（使用信纸图片作为底图）】 */
-        .card-body {
-            flex: 1; position: relative; min-height: 220px; padding: 0; overflow: hidden;
-        }
-        /* 用生成的横线信纸图片作为背景 */
-        .paper-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('paper-bg.png');
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-            pointer-events: none; z-index: 1;
-        }
-        
-        .card-content {
-            position: relative; z-index: 2; height: 100%;
-            padding: 10px 20px 12px;
-            cursor: pointer;
-            display: flex; flex-direction: column; justify-content: center;
-        }
-        .page {
-            display: none; flex-direction: column; justify-content: center;
-            width: 100%;
-            animation: pageFadeIn 0.6s ease-out forwards;
-        }
-        .page.active { display: flex; }
+        .card-content { position: relative; min-height: 260px; cursor: pointer; }
+        .page { display: none; width: 100%; animation: pageFadeIn 0.4s ease-out forwards; }
+        .page.active { display: flex; flex-direction: column; gap: 6px; }
         @keyframes pageFadeIn { 0% { opacity: 0; transform: translateX(8px); } 100% { opacity: 1; transform: translateX(0); } }
 
-        /* 关怀版大字与手写体 */
+        /* 核心改动：用下划线模拟信纸 */
         .text-line {
-            font-size: 1.2rem; line-height: 2.2; color: #3a2f28; 
-            font-family: 'KaiTi', 'STKaiti', serif; margin-bottom: 4px; opacity: 0;
-            position: relative; letter-spacing: 0.06em; text-align: left;
+            font-size: 1.25rem; line-height: 2.4; color: #3a2f28; 
+            font-family: 'KaiTi', 'STKaiti', serif; opacity: 0;
+            letter-spacing: 0.06em; text-align: left;
+            display: inline-block; /* 关键：让下划线正好和字一样长 */
+            border-bottom: 1px solid rgba(180, 150, 120, 0.25); /* 精致的浅色下划线 */
+            padding-bottom: 2px;
+            width: 100%; /* 文字不够长的时候，自动适应 */
         }
         
-        /* 【3. 固定的页脚】 */
-        .card-footer {
-            flex-shrink: 0; padding: 0 12px 18px; margin-top: 8px;
-            position: relative; z-index: 2;
+        /* 签名不需要下划线 */
+        .text-line.sign {
+            border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 10px;
         }
-        .divider { width: 55%; margin: 0 auto 10px; height: 1px; background: linear-gradient(90deg, transparent, rgba(180,140,100,0.45), transparent); position: relative; }
-        .divider::after { content: '♪'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fefcf8; padding: 0 14px; color: #b8862d; font-size: 0.8rem; }
+        .text-line.hint-tip {
+            border-bottom: none; text-align: center; color: rgba(140,110,80,0.4); font-size: 0.8rem; padding-top: 10px;
+        }
 
+        /* 修复底部按钮，改用纯CSS（绝不碎裂） */
+        .card-footer { text-align: center; padding-top: 16px; }
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .audio-img-btn { width: 36px; height: 36px; object-fit: contain; cursor: pointer; transition: transform 0.2s ease; }
-        .audio-img-btn:active { transform: scale(0.9); }
+        .audio-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: #c0392b; color: #fff; border: none;
+            font-size: 0.8rem; cursor: pointer; transition: transform 0.2s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .audio-btn:active { transform: scale(0.9); }
+        .audio-btn.playing { background: #a93226; }
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
 
-        /* 底部提示 */
         .hint { margin-top: 20px; font-size: 0.8rem; color: rgba(140,110,80,0.55); letter-spacing: 0.06em; animation: hintPulse 2.2s infinite ease-in-out; }
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
         .hint.hidden { visibility: hidden; }
 
+        /* 适配手机 */
         @media (max-width: 500px) {
-            body { padding: 10px; }
-            .envelope-wrapper { width: 90vw; height: 220px; }
-            .card-wrapper { width: 95vw; }
-            .card-header { padding-top: 20px; }
+            .envelope-wrapper { width: 88vw; height: 200px; }
+            .card { padding: 16px 12px 14px; }
             .card-header .title { font-size: 1.8rem; }
-            .card-content { padding: 0 16px 6px; min-height: 200px; }
-            .text-line { font-size: 1rem; line-height: 2; }
-            .audio-bar { margin-bottom: 0; }
-            .audio-img-btn { width: 32px; height: 32px; }
+            .card-content { min-height: 220px; }
+            .text-line { font-size: 1.1rem; line-height: 2.2; }
+            .env-body::after { font-size: 1.1rem; }
+            .env-flap::after { font-size: 0.55rem; padding: 2px 4px; }
         }
     </style>
 </head>
@@ -155,64 +173,53 @@
     </div>
 
     <div class="scene">
-        <!-- 替换为新生成的信封 -->
+        <!-- 纯CSS信封 -->
         <div class="envelope-wrapper" id="envelopeWrapper">
-            <!-- 信封图片直接由 background-image 控制 -->
+            <div class="env-body"></div>
+            <div class="env-flap" id="envFlap"></div>
+            <div class="env-seal" id="envSeal"></div>
         </div>
 
         <div class="card-wrapper" id="cardWrapper">
             <div class="card">
-                
-                <!-- 固定页眉区 -->
                 <div class="card-header">
                     <div class="title">生 日 快 乐</div>
                     <div class="subtitle">—— 致我最敬爱的爸爸 ——</div>
                 </div>
 
-                <!-- 可翻页正文区 (带信纸底图) -->
-                <div class="card-body">
-                    <div class="paper-bg"></div>
-                    <div class="card-content" id="cardContent">
-                        <!-- 第1页 -->
-                        <div class="page active" data-index="0">
-                            <div class="text-line" data-text="亲爱的爸爸，"></div>
-                            <div class="text-line" data-text="今天是您的生日。"></div>
-                            <div class="text-line" data-text="我想对您说一声："></div>
-                            <div class="text-line" data-text="辛苦了，谢谢您！"></div>
-                        </div>
-                        <!-- 第2页 -->
-                        <div class="page" data-index="1">
-                            <div class="text-line" data-text="感谢您多年来的养育与呵护。"></div>
-                            <div class="text-line" data-text="您的每一滴汗水、每一根白发，"></div>
-                            <div class="text-line" data-text="都是为我撑起一片天的印记。"></div>
-                        </div>
-                        <!-- 第3页 -->
-                        <div class="page" data-index="2">
-                            <div class="text-line" data-text="愿时光慢一些。"></div>
-                            <div class="text-line" data-text="愿您身体健康、笑容常在。"></div>
-                            <div class="text-line" data-text="愿幸福与温暖常伴您左右。"></div>
-                        </div>
-                        <!-- 第4页 -->
-                        <div class="page" data-index="3">
-                            <div class="text-line" data-text="无论我走到哪里，"></div>
-                            <div class="text-line" data-text="您永远是我心中最坚实的依靠。"></div>
-                            <div class="text-line" style="margin-top: 20px; text-align: right; opacity: 1; color: #c0392b; font-size: 1.1rem;">
-                                —— 永远爱您的孩子
-                            </div>
-                            <div style="text-align: center; margin-top: 10px; color: rgba(140,110,80,0.4); font-size: 0.8rem; font-family: sans-serif;" id="pageHint">🎉 点击此处重阅</div>
-                        </div>
+                <!-- 翻页内容区，采用下划线排版 -->
+                <div class="card-content" id="cardContent">
+                    <div class="page active">
+                        <div class="text-line" data-text="亲爱的爸爸，"> </div>
+                        <div class="text-line" data-text="今天是您的生日。"> </div>
+                        <div class="text-line" data-text="我想对您说一声："> </div>
+                        <div class="text-line" data-text="辛苦了，谢谢您！"> </div>
+                    </div>
+                    <div class="page">
+                        <div class="text-line" data-text="感谢您多年来的养育与呵护。"> </div>
+                        <div class="text-line" data-text="您的每一滴汗水，"> </div>
+                        <div class="text-line" data-text="都是为我撑起一片天的印记。"> </div>
+                    </div>
+                    <div class="page">
+                        <div class="text-line" data-text="愿时光慢一些。"> </div>
+                        <div class="text-line" data-text="愿您身体健康、笑容常在。"> </div>
+                        <div class="text-line" data-text="愿幸福与温暖常伴您左右。"> </div>
+                    </div>
+                    <div class="page">
+                        <div class="text-line" data-text="无论我走到哪里，"> </div>
+                        <div class="text-line" data-text="您永远是我心中最坚实的依靠。"> </div>
+                        <div class="text-line sign">—— 永远爱您的孩子</div>
+                        <div class="text-line hint-tip">���� 点击此处重新翻阅</div>
                     </div>
                 </div>
 
-                <!-- 固定页脚区 -->
+                <!-- 纯CSS红色按钮控制区（彻底修复图片碎裂） -->
                 <div class="card-footer">
-                    <div class="divider"></div>
                     <div class="audio-bar">
-                        <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
+                        <button class="audio-btn" id="audioBtn" title="播放/暂停背景音乐">▶</button>
                         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -231,24 +238,17 @@
             const bgAudio = document.getElementById('bgAudio');
             const audioBtn = document.getElementById('audioBtn');
             const progressFill = document.getElementById('progressFill');
-            const pageHint = document.getElementById('pageHint');
 
             let currentPageIndex = 0;
             let isTyping = false;
-            let typeTimer = null;
-            let isOpen = false, isAnimating = false, isAudioReady = false;
-            let musicTriggered = false;
+            let isOpen = false, isAnimating = false;
 
-            bgAudio.load();
-            bgAudio.addEventListener('loadeddata', () => { isAudioReady = true; });
-            bgAudio.addEventListener('canplaythrough', () => { isAudioReady = true; });
-
-            // ========== 打字动画函数 ==========
+            // 打字动画
             function typeWriter(element, text, index = 0, callback) {
                 if (index < text.length) {
                     element.textContent += text[index];
-                    let delay = Math.random() * 60 + 40; 
-                    typeTimer = setTimeout(() => typeWriter(element, text, index + 1, callback), delay);
+                    let delay = Math.random() * 50 + 30; 
+                    setTimeout(() => typeWriter(element, text, index + 1, callback), delay);
                 } else {
                     element.style.opacity = '1';
                     if (callback) callback();
@@ -262,29 +262,24 @@
                     line.style.opacity = '0';
                     setTimeout(() => {
                         typeWriter(line, line.dataset.text, 0, () => {
-                            if(index === lines.length - 1) {
-                                isTyping = false;
-                            }
+                            if(index === lines.length - 1) isTyping = false;
                         });
-                    }, index * 400 + 200);
+                    }, index * 300 + 100);
                 });
             }
 
             function changePage() {
                 if (isTyping) return;
+                const currentPage = document.querySelector(`.page:nth-child(${currentPageIndex + 1})`);
+                const nextPage = document.querySelector(`.page:nth-child(${currentPageIndex + 2})`);
 
-                const currentPage = document.querySelector(`.page[data-index="${currentPageIndex}"]`);
-                const nextPage = document.querySelector(`.page[data-index="${currentPageIndex + 1}"]`);
-
-                // 如果是最后一页（data-index="3"），点击则重置翻页
+                // 翻到最后一页时重置
                 if (currentPageIndex === 3) {
                     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                    const firstPage = document.querySelector(`.page[data-index="0"]`);
-                    firstPage.classList.add('active');
+                    document.querySelector('.page:first-child').classList.add('active');
                     currentPageIndex = 0;
                     isTyping = true;
-                    triggerPageAnimation(firstPage);
-                    pageHint.textContent = '🎉 点击此处重阅';
+                    triggerPageAnimation(document.querySelector('.page:first-child'));
                     return;
                 }
 
@@ -297,28 +292,18 @@
                 }
             }
 
-            // ========== 打开信封 ==========
+            // 打开/关闭信封
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
-                
-                // 第一步：将信封图片替换为打开的状态
-                envelopeWrapper.style.backgroundImage = "url('envelope-open.png')";
-                // 去掉飘浮动画
-                envelopeWrapper.style.animation = 'none';
-
+                envelopeWrapper.classList.add('flap-open');
                 tryPlayMusic();
-                
-                // 第二步：0.7秒后隐藏信封，显示贺卡
                 setTimeout(() => {
                     envelopeWrapper.style.display = 'none'; 
                     cardWrapper.classList.add('visible');
                     hintText.classList.add('hidden');
-                    // 启动首页打字动画
-                    const firstPage = document.querySelector(`.page[data-index="0"]`);
                     isTyping = true;
-                    triggerPageAnimation(firstPage);
-                    // 启动蛋糕掉落
+                    triggerPageAnimation(document.querySelector('.page:first-child'));
                     cakeBg.classList.add('active');
                     isAnimating = false;
                 }, 700);
@@ -326,48 +311,44 @@
 
             function closeCard() {
                 if (isAnimating || !isOpen) return;
-                isAnimating = true; isOpen = false; musicTriggered = false;
+                isAnimating = true; isOpen = false;
                 bgAudio.pause(); updateAudioBtn(false);
                 cardWrapper.classList.remove('visible');
                 envelopeWrapper.style.display = ''; 
-                envelopeWrapper.style.backgroundImage = "url('envelope-closed.png')";
-                envelopeWrapper.style.animation = 'gentleFloat 4s ease-in-out infinite';
+                envelopeWrapper.classList.remove('flap-open');
                 hintText.classList.remove('hidden');
                 cakeBg.classList.remove('active');
-                // 重置翻页状态
+                // 重置
                 currentPageIndex = 0;
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                document.querySelector(`.page[data-index="0"]`).classList.add('active');
+                document.querySelector('.page:first-child').classList.add('active');
                 document.querySelectorAll('.text-line[data-text]').forEach(l => { l.textContent = ''; l.style.opacity = '0'; });
-                pageHint.textContent = '🎉 点击此处重阅';
                 setTimeout(() => { isAnimating = false; }, 500);
             }
 
+            // 音乐控制
             function tryPlayMusic() {
-                if (musicTriggered || !bgAudio.src) return;
                 const playPromise = bgAudio.play();
                 if (playPromise !== undefined) {
-                    playPromise.then(() => { musicTriggered = true; updateAudioBtn(true); }).catch(() => {});
+                    playPromise.then(() => updateAudioBtn(true)).catch(() => {});
                 }
             }
-
             function updateAudioBtn(playing) {
-                audioBtn.src = playing ? 'pause-btn.png' : 'play-btn.png';
+                audioBtn.textContent = playing ? '⏸' : '▶';
+                audioBtn.classList.toggle('playing', playing);
             }
-
             function toggleAudio() {
-                if (!isAudioReady || !bgAudio.src) return;
                 if (bgAudio.paused) {
-                    bgAudio.play().then(() => { updateAudioBtn(true); musicTriggered = true; }).catch(() => {});
+                    bgAudio.play().then(() => updateAudioBtn(true)).catch(() => {});
                 } else {
                     bgAudio.pause(); updateAudioBtn(false);
                 }
             }
 
-            // ========== 事件绑定 ==========
-            envelopeWrapper.addEventListener('click', (e) => { if (!isOpen && !isAnimating) openEnvelope(); });
-            cardContent.addEventListener('click', (e) => { if (isOpen && !isAnimating) changePage(); });
-            cardWrapper.addEventListener('dblclick', (e) => { if (isOpen && !isAnimating) closeCard(); });
+            // 事件绑定
+            envelopeWrapper.addEventListener('click', openEnvelope);
+            cardContent.addEventListener('click', changePage);
+            cardWrapper.addEventListener('dblclick', closeCard);
             audioBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleAudio(); });
 
             bgAudio.addEventListener('timeupdate', () => {
@@ -380,12 +361,8 @@
             bgAudio.addEventListener('ended', () => { updateAudioBtn(false); progressFill.style.width = '100%'; });
 
             document.addEventListener('keydown', (e) => {
-                if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); 
-                    if (!isOpen && !isAnimating) openEnvelope(); 
-                    else if (isOpen && !isAnimating) changePage(); 
-                    else toggleAudio(); 
-                }
-                if (e.key === 'Escape' || e.code === 'Escape') { if (isOpen && !isAnimating) closeCard(); }
+                if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); if (!isOpen) openEnvelope(); else changePage(); }
+                if (e.key === 'Escape' || e.code === 'Escape') { if (isOpen) closeCard(); }
             });
         })();
     </script>
