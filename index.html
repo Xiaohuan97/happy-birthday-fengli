@@ -94,59 +94,61 @@
         .env-seal::before { content: '♥'; font-size: 0.8rem; color: rgba(255,255,255,0.7); }
         .envelope-wrapper.flap-open .env-seal { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
 
-        /* ==================== 新版纯白简约贺卡（清晰区分背景） ==================== */
+        /* ==================== 白卡片设计 ==================== */
         .card-wrapper { display: none; width: 340px; max-width: 95vw; }
         .card-wrapper.visible { display: flex; animation: cardAppear 0.5s ease-out forwards; }
         @keyframes cardAppear { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
 
         .card {
-            background: #fefcfb; /* 偏米白的柔和白色 */
-            border: 1px solid rgba(220, 200, 180, 0.3); /* 极浅的边框，与背景微区分 */
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); /* 柔和的阴影，像一张悬浮的白卡片 */
+            background: #fefcfb;
+            border: 1px solid rgba(220, 200, 180, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
             width: 100%; display: flex; flex-direction: column; position: relative;
-            padding: 20px 16px 18px;
+            padding: 24px 16px 18px;
         }
 
+        /* === 贺卡顶部区域（充分利用留白） === */
         .card-header { text-align: center; padding-bottom: 16px; }
-        .card-header .title { font-size: 2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+        .header-wish {
+            font-size: 1.1rem; color: #a64e3b; margin-bottom: 10px; letter-spacing: 0.06em;
+        }
+        .card-header .title { font-size: 2.2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
         .card-header .subtitle { font-size: 0.85rem; color: #b8862d; letter-spacing: 0.1em; }
 
-        .card-content { position: relative; min-height: 260px; cursor: pointer; }
+        /* === 贺卡内容区 === */
+        .card-content { position: relative; min-height: 220px; cursor: pointer; }
         .page { display: none; width: 100%; animation: pageFadeIn 0.4s ease-out forwards; }
-        .page.active { display: flex; flex-direction: column; gap: 6px; }
+        .page.active { display: flex; flex-direction: column; gap: 4px; }
         @keyframes pageFadeIn { 0% { opacity: 0; transform: translateX(8px); } 100% { opacity: 1; transform: translateX(0); } }
 
-        /* 信纸下划线排版 */
         .text-line {
-            font-size: 1.25rem; line-height: 2.4; color: #3a2f28; 
+            font-size: 1.3rem; line-height: 2.2; color: #3a2f28; 
             font-family: 'KaiTi', 'STKaiti', serif; opacity: 0;
             letter-spacing: 0.06em; text-align: left;
             display: inline-block;
-            border-bottom: 1px solid rgba(180, 150, 120, 0.15); /* 极淡的下划线 */
+            border-bottom: 1px solid rgba(180, 150, 120, 0.2);
             padding-bottom: 2px;
             width: 100%;
         }
         
-        /* 签名和提示不需要下划线 */
+        /* 署名 */
         .text-line.sign {
-            border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 15px;
+            border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; 
+            padding-top: 12px; letter-spacing: 0.08em;
         }
         .text-line.hint-tip {
-            border-bottom: none; text-align: center; color: rgba(140,110,80,0.4); font-size: 0.8rem; padding-top: 8px;
+            border-bottom: none; text-align: center; color: rgba(140,110,80,0.45); font-size: 0.8rem; padding-top: 10px;
         }
 
-        /* ==================== 恢复成你之前设计的图片按钮 ==================== */
-        .card-footer { text-align: center; padding-top: 16px; display: flex; justify-content: center; }
+        /* === 底部图片按钮 === */
+        .card-footer { text-align: center; padding-top: 12px; display: flex; justify-content: center; }
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
         .audio-img-btn {
-            width: 36px; height: 36px;
-            object-fit: contain; cursor: pointer;
+            width: 36px; height: 36px; object-fit: contain; cursor: pointer;
             transition: transform 0.2s ease;
         }
-        .audio-img-btn:active {
-            transform: scale(0.9); /* 点击时轻微缩小，模拟按压 */
-        }
+        .audio-img-btn:active { transform: scale(0.9); }
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
 
@@ -156,10 +158,11 @@
 
         @media (max-width: 500px) {
             .envelope-wrapper { width: 88vw; height: 200px; }
-            .card { padding: 16px 12px 14px; }
+            .card { padding: 18px 12px 14px; }
+            .header-wish { font-size: 1rem; }
             .card-header .title { font-size: 1.8rem; }
-            .card-content { min-height: 220px; }
-            .text-line { font-size: 1.1rem; line-height: 2.2; }
+            .card-content { min-height: 180px; }
+            .text-line { font-size: 1.1rem; line-height: 2; }
             .env-body::after { font-size: 1.1rem; }
             .env-flap::after { font-size: 0.55rem; padding: 2px 4px; }
         }
@@ -172,7 +175,6 @@
     </div>
 
     <div class="scene">
-        <!-- 纯CSS信封 -->
         <div class="envelope-wrapper" id="envelopeWrapper">
             <div class="env-body"></div>
             <div class="env-flap" id="envFlap"></div>
@@ -182,11 +184,12 @@
         <div class="card-wrapper" id="cardWrapper">
             <div class="card">
                 <div class="card-header">
+                    <div class="header-wish">���� 亲爱的爸爸，儿女祝您生日快乐 ����</div>
                     <div class="title">生 日 快 乐</div>
                     <div class="subtitle">—— 致我最敬爱的爸爸 ——</div>
                 </div>
 
-                <!-- 翻页内容 -->
+                <!-- 翻页内容区 -->
                 <div class="card-content" id="cardContent">
                     <div class="page active">
                         <div class="text-line" data-text="亲爱的爸爸，"> </div>
@@ -204,20 +207,19 @@
                         <div class="text-line" data-text="愿您身体健康、笑容常在。"> </div>
                         <div class="text-line" data-text="愿幸福与温暖常伴您左右。"> </div>
                     </div>
-                    <!-- 第四页，署名特别处理 -->
+                    <!-- 第4页：署名特意去掉了打字动画，保证不缺失！ -->
                     <div class="page">
                         <div class="text-line" data-text="无论我走到哪里，"> </div>
                         <div class="text-line" data-text="您永远是我心中最坚实的依靠。"> </div>
-                        <!-- 保持你之前的红色署名 -->
+                        <!-- 这段不用打字动画，直接展示 -->
                         <div class="text-line sign">—— 永远爱您的孩子</div>
                         <div class="text-line hint-tip">���� 点击此处重新翻阅</div>
                     </div>
                 </div>
 
-                <!-- 图片按钮控制区 -->
                 <div class="card-footer">
                     <div class="audio-bar">
-                        <!-- 关键修改：换成之前的图片按钮 -->
+                        <!-- 图片按钮 -->
                         <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
                         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
                     </div>
@@ -245,7 +247,7 @@
             let isTyping = false;
             let isOpen = false, isAnimating = false;
 
-            // 书写动画逻辑
+            // 打字动画逻辑
             function typeWriter(element, text, index = 0, callback) {
                 if (index < text.length) {
                     element.textContent += text[index];
@@ -258,6 +260,7 @@
             }
 
             function triggerPageAnimation(pageElement) {
+                // 只对有 data-text 属性的行进行动画，署名直接跳过
                 const lines = pageElement.querySelectorAll('.text-line[data-text]');
                 lines.forEach((line, index) => {
                     line.textContent = '';
@@ -275,7 +278,6 @@
                 const currentPage = document.querySelector(`.page:nth-child(${currentPageIndex + 1})`);
                 const nextPage = document.querySelector(`.page:nth-child(${currentPageIndex + 2})`);
 
-                // 最后一页时循环回第一页
                 if (currentPageIndex === 3) {
                     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                     document.querySelector('.page:first-child').classList.add('active');
@@ -294,7 +296,6 @@
                 }
             }
 
-            // 打开信封与音乐逻辑
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
@@ -327,14 +328,15 @@
                 setTimeout(() => { isAnimating = false; }, 500);
             }
 
+            // === 修复：按钮切换逻辑 ===
             function tryPlayMusic() {
                 const playPromise = bgAudio.play();
                 if (playPromise !== undefined) {
                     playPromise.then(() => updateAudioBtn(true)).catch(() => {});
                 }
             }
-            // 换回图片后，切图逻辑改变
             function updateAudioBtn(playing) {
+                // 必须换回 play-btn.png
                 audioBtn.src = playing ? 'pause-btn.png' : 'play-btn.png';
             }
 
