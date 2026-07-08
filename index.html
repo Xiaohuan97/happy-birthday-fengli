@@ -236,10 +236,10 @@
                     </div>
                 </div>
 
-                <!-- === 新增的 3 行歌词显示区 === -->
+                <!-- === 三行歌词显示区 === -->
                 <div class="lyrics-container" id="lyricsContainer">
                     <div class="lrc-line lrc-prev" id="lrcPrev"></div>
-                    <div class="lrc-line lrc-current" id="lrcCurrent">等待加载歌词...</div>
+                    <div class="lrc-line lrc-current" id="lrcCurrent">加载歌词中...</div>
                     <div class="lrc-line lrc-next" id="lrcNext"></div>
                 </div>
 
@@ -281,58 +281,37 @@
             let isTyping = false;
             let isOpen = false, isAnimating = false;
             
-            // 歌词数据
-            let lyricsData = [];
+            // 歌词数据（免外部文件读取，精准同步）
+            const lyricsData = [
+                { time: 0, text: '生日感恩暖阳' },
+                { time: 3.80, text: '晨光爬过粥锅沿' },
+                { time: 7.10, text: '您擦胡茬笑眼弯' },
+                { time: 10.40, text: '公文包挂门把边' },
+                { time: 13.70, text: '喊我快趁热添饭' },
+                { time: 17.00, text: '阳光绕着您转圈圈' },
+                { time: 20.30, text: '笑纹里藏蜜甜' },
+                { time: 24.80, text: '寒夜等候路灯前' },
+                { time: 28.10, text: '肩头落满薄霜寒' },
+                { time: 31.40, text: '奔波半生未偷闲' },
+                { time: 34.70, text: '扛起全家四季安' },
+                { time: 38.00, text: '今朝生辰许小心愿' },
+                { time: 41.30, text: '岁岁常相见' },
+                { time: 45.90, text: '感恩暖阳 是您温暖双肩' },
+                { time: 49.50, text: '遮过风雨 护我岁岁平安' },
+                { time: 53.10, text: '人间万般温柔 皆出自您眉眼' },
+                { time: 56.70, text: '余生换我 伴您朝夕三餐' },
+                { time: 61.40, text: '感恩暖阳 予我岁岁心安' },
+                { time: 65.00, text: '时光慢些 留住您的容颜' },
+                { time: 68.60, text: '从前您撑天地 如今我来分担' },
+                { time: 72.20, text: '岁岁生辰 暖意永不消散' },
+                { time: 150.00, text: '（尾奏轻音乐）' },
+                { time: 165.00, text: '（歌曲结束）' }
+            ];
             let currentLyricIdx = -1;
-            let isLyricsReady = false;
 
-            // ========== 1. 读取并解析 LRC 歌词文件 ==========
-            // 注意：请确保文件名必须是 father-song.lrc 并上传到和 index.html 同级目录
-            async function loadLRC() {
-                try {
-                    const response = await fetch('father-song.lrc');
-                    if (!response.ok) throw new Error("歌词文件不存在");
-                    const text = await response.text();
-                    parseLRC(text);
-                } catch (err) {
-                    console.warn("⚠️ 没有加载到 external LRC，将使用默认歌词");
-                    lrcCurrent.textContent = "���� 音乐已加载 ����";
-                    isLyricsReady = true; 
-                }
-            }
-
-            function parseLRC(lrcText) {
-                const lines = lrcText.split('\n');
-                const pattern = /\[(\d{2}):(\d{2})\.(\d{2})\]/g; 
-                lyricsData = [];
-                for (let line of lines) {
-                    let matches = [...line.matchAll(pattern)];
-                    if (matches.length > 0) {
-                        let text = line.replace(pattern, '').trim();
-                        if (!text) continue;
-                        for (let match of matches) {
-                            const min = parseInt(match[1]);
-                            const sec = parseInt(match[2]);
-                            const ms = parseInt(match[3]);
-                            const time = min * 60 + sec + (ms / 100);
-                            lyricsData.push({ time, text });
-                        }
-                    }
-                }
-                lyricsData.sort((a, b) => a.time - b.time);
-                if(lyricsData.length > 0) {
-                    lrcCurrent.textContent = lyricsData[0].text || "音乐已加载";
-                    isLyricsReady = true;
-                    console.log("✅ 成功加载 LRC 歌词:", lyricsData.length, "句");
-                } else {
-                    lrcCurrent.textContent = "���� 音乐已加载 ����";
-                }
-            }
-            loadLRC();
-
-            // ========== 2. 更新 3 行歌词 ==========
+            // ========== 1. 更新 3 行歌词 ==========
             function updateLyrics(currentTime) {
-                if (!isLyricsReady || lyricsData.length === 0) return;
+                if (lyricsData.length === 0) return;
                 let activeIdx = 0;
                 for (let i = 0; i < lyricsData.length; i++) {
                     if (currentTime >= lyricsData[i].time) activeIdx = i;
@@ -350,7 +329,7 @@
                 }
             }
 
-            // ========== 3. 翻页打字逻辑 ==========
+            // ========== 2. 翻页打字逻辑 ==========
             function typeWriter(element, text, index = 0, callback) {
                 if (index < text.length) {
                     element.textContent += text[index];
@@ -411,7 +390,7 @@
                 }
             });
 
-            // ========== 4. 信封与音乐逻辑 ==========
+            // ========== 3. 信封与音乐逻辑 ==========
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
