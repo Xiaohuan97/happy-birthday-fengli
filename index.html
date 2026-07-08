@@ -17,18 +17,16 @@
             padding: 20px;
         }
 
-        /* ==================== 轻量蛋糕掉落特效 ==================== */
+        /* ==================== 蛋糕掉落特效 ==================== */
         .cake-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; pointer-events: none; z-index: 9999; 
-            display: none;
+            overflow: hidden; pointer-events: none; z-index: 9999; display: none;
         }
         .cake-bg.active { display: block; }
         .cake-bg span {
             position: absolute; display: block; width: 30px; height: 30px; top: -50px; 
             background-size: contain; background-position: center; background-repeat: no-repeat;
-            animation: cakeFall 10s linear infinite;
-            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.1)); 
+            animation: cakeFall 10s linear infinite; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.1)); 
         }
         .cake-bg span:nth-child(1) { left: 10%; width: 25px; height: 25px; background-image: url('cake1.png'); animation-delay: 0s; animation-duration: 12s; }
         .cake-bg span:nth-child(2) { left: 25%; width: 40px; height: 40px; background-image: url('cake2.png'); animation-delay: 2s; animation-duration: 9s; }
@@ -52,8 +50,7 @@
         /* ==================== 纯CSS信封 ==================== */
         .envelope-wrapper {
             position: relative; width: 320px; max-width: 85vw; height: 220px;
-            cursor: pointer; transition: opacity 0.5s ease;
-            animation: gentleFloat 4s ease-in-out infinite;
+            cursor: pointer; transition: opacity 0.5s ease; animation: gentleFloat 4s ease-in-out infinite;
         }
         @keyframes gentleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .envelope-wrapper.envelope-hidden { display: none !important; }
@@ -64,31 +61,19 @@
             border-radius: 6px; box-shadow: 0 8px 28px rgba(0,0,0,0.14); z-index: 3;
             display: flex; align-items: center; justify-content: center;
         }
-        .env-body::after {
-            content: '致·亲爱的爸爸'; color: #5a3f28; font-size: 1.4rem;
-            font-weight: bold; letter-spacing: 0.08em; opacity: 0.9;
-        }
-
+        .env-body::after { content: '致·亲爱的爸爸'; color: #5a3f28; font-size: 1.4rem; font-weight: bold; letter-spacing: 0.08em; opacity: 0.9; }
         .env-flap {
             position: absolute; top: 0; left: 0; width: 100%; height: 48%;
             background: linear-gradient(180deg, #f3e6d2 0%, #e8d5b5 15%, #dfcaa6 40%, #d9c29d 65%, #dcc7a4 100%);
-            clip-path: polygon(0 0, 50% 100%, 100% 0);
-            z-index: 6; transform-origin: top center;
-            transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1);
-            backface-visibility: hidden;
+            clip-path: polygon(0 0, 50% 100%, 100% 0); z-index: 6; transform-origin: top center;
+            transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1); backface-visibility: hidden;
         }
-        .env-flap::after {
-            content: '生日快乐'; position: absolute; top: 10px; right: 10px;
-            border: 1.5px dashed #c0392b; padding: 2px 5px; font-size: 0.6rem; 
-            color: #c0392b; background: #fcf6e7; border-radius: 2px; transform: rotate(8deg);
-        }
+        .env-flap::after { content: '生日快乐'; position: absolute; top: 10px; right: 10px; border: 1.5px dashed #c0392b; padding: 2px 5px; font-size: 0.6rem; color: #c0392b; background: #fcf6e7; border-radius: 2px; transform: rotate(8deg); }
         .envelope-wrapper.flap-open .env-flap { transform: rotateX(-180deg); opacity: 0; }
-
         .env-seal {
             position: absolute; top: 56%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px;
             background: radial-gradient(ellipse at 35% 30%, #e74c3c 0%, #c0392b 40%, #8b1a1a 100%);
-            border-radius: 50%; z-index: 7; pointer-events: none;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.28); transition: all 0.5s ease;
+            border-radius: 50%; z-index: 7; pointer-events: none; box-shadow: 0 3px 8px rgba(0,0,0,0.28); transition: all 0.5s ease;
             display: flex; align-items: center; justify-content: center;
         }
         .env-seal::before { content: '♥'; font-size: 0.8rem; color: rgba(255,255,255,0.7); }
@@ -100,54 +85,49 @@
         @keyframes cardAppear { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
 
         .card {
-            background: #fefcfb;
-            border: 1px solid rgba(220, 200, 180, 0.3);
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-            width: 100%; display: flex; flex-direction: column; position: relative;
-            padding: 24px 16px 18px;
+            background: #fefcfb; border: 1px solid rgba(220, 200, 180, 0.3); border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); width: 100%; display: flex; flex-direction: column;
+            padding: 24px 16px 18px; position: relative;
         }
 
-        /* === 贺卡顶部区域（充分利用留白） === */
-        .card-header { text-align: center; padding-bottom: 16px; }
-        .header-wish {
-            font-size: 1.1rem; color: #a64e3b; margin-bottom: 10px; letter-spacing: 0.06em;
-        }
-        .card-header .title { font-size: 2.2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+        .card-header { text-align: center; padding-bottom: 16px; display: flex; flex-direction: column; align-items: center; }
+        .card-header .title { font-size: 2.2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
+        .card-header .header-wish { font-size: 1.0rem; color: #a64e3b; margin-bottom: 8px; letter-spacing: 0.06em; text-align: center; }
         .card-header .subtitle { font-size: 0.85rem; color: #b8862d; letter-spacing: 0.1em; }
 
         /* === 贺卡内容区 === */
-        .card-content { position: relative; min-height: 220px; cursor: pointer; }
+        .card-content { position: relative; min-height: 180px; cursor: pointer; }
         .page { display: none; width: 100%; animation: pageFadeIn 0.4s ease-out forwards; }
         .page.active { display: flex; flex-direction: column; gap: 4px; }
         @keyframes pageFadeIn { 0% { opacity: 0; transform: translateX(8px); } 100% { opacity: 1; transform: translateX(0); } }
 
         .text-line {
-            font-size: 1.3rem; line-height: 2.2; color: #3a2f28; 
-            font-family: 'KaiTi', 'STKaiti', serif; opacity: 0;
-            letter-spacing: 0.06em; text-align: left;
-            display: inline-block;
-            border-bottom: 1px solid rgba(180, 150, 120, 0.2);
-            padding-bottom: 2px;
-            width: 100%;
+            font-size: 1.3rem; line-height: 2.2; color: #3a2f28; font-family: 'KaiTi', 'STKaiti', serif; opacity: 0;
+            letter-spacing: 0.06em; text-align: left; display: inline-block;
+            border-bottom: 1px solid rgba(180, 150, 120, 0.2); padding-bottom: 2px; width: 100%;
         }
-        
-        /* 署名 */
-        .text-line.sign {
-            border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; 
-            padding-top: 12px; letter-spacing: 0.08em;
+        .text-line.sign { border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 12px; letter-spacing: 0.08em; }
+        .text-line.hint-tip { border-bottom: none; text-align: center; color: rgba(140,110,80,0.45); font-size: 0.8rem; padding-top: 10px; }
+
+        /* === KTV 三行歌词显示区域 === */
+        .lyrics-container {
+            position: relative; z-index: 2; margin-top: 8px; padding: 8px 4px;
+            min-height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(255, 248, 235, 0.5); border-radius: 8px; overflow: hidden;
         }
-        .text-line.hint-tip {
-            border-bottom: none; text-align: center; color: rgba(140,110,80,0.45); font-size: 0.8rem; padding-top: 10px;
+        .lrc-line { text-align: center; width: 100%; transition: all 0.4s ease; line-height: 1.6; }
+        .lrc-prev, .lrc-next {
+            font-size: 0.85rem; color: #a39182; opacity: 0.4;
+        }
+        .lrc-current {
+            font-size: 1.2rem; color: #c0392b; font-weight: 700; opacity: 1;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
         }
 
-        /* === 底部图片按钮 === */
+        /* === 底部按钮 === */
         .card-footer { text-align: center; padding-top: 12px; display: flex; justify-content: center; }
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .audio-img-btn {
-            width: 36px; height: 36px; object-fit: contain; cursor: pointer;
-            transition: transform 0.2s ease;
-        }
+        .audio-img-btn { width: 36px; height: 36px; object-fit: contain; cursor: pointer; transition: transform 0.2s ease; }
         .audio-img-btn:active { transform: scale(0.9); }
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
@@ -156,22 +136,64 @@
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
         .hint.hidden { visibility: hidden; }
 
+        /* ==================== 结束弹窗 ==================== */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px);
+            display: none; justify-content: center; align-items: center; z-index: 99999;
+            animation: modalFadeIn 0.5s ease;
+        }
+        @keyframes modalFadeIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
+        .modal-box {
+            background: #ffffff; border-radius: 20px; padding: 30px; max-width: 85vw; width: 340px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2); text-align: center;
+            font-family: 'KaiTi', 'STKaiti', serif;
+        }
+        .modal-title { font-size: 1.5rem; color: #c0392b; margin-bottom: 16px; letter-spacing: 0.05em; }
+        .modal-content { font-size: 1.15rem; color: #3a2f28; line-height: 2; margin-bottom: 24px; }
+        .modal-close-btn {
+            background: #c0392b; color: #fff; border: none; padding: 10px 30px;
+            border-radius: 30px; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            font-family: 'KaiTi', 'STKaiti', serif; letter-spacing: 0.05em;
+        }
+        .modal-close-btn:active { transform: scale(0.95); background: #a93226; }
+
         @media (max-width: 500px) {
             .envelope-wrapper { width: 88vw; height: 200px; }
             .card { padding: 18px 12px 14px; }
-            .header-wish { font-size: 1rem; }
             .card-header .title { font-size: 1.8rem; }
-            .card-content { min-height: 180px; }
+            .header-wish { font-size: 0.9rem; }
+            .card-content { min-height: 160px; }
             .text-line { font-size: 1.1rem; line-height: 2; }
             .env-body::after { font-size: 1.1rem; }
-            .env-flap::after { font-size: 0.55rem; padding: 2px 4px; }
+            .lyrics-container { min-height: 60px; margin-top: 6px; }
+            .lrc-current { font-size: 1rem; }
+            .lrc-prev, .lrc-next { font-size: 0.75rem; }
+            .modal-box { padding: 20px; width: 85vw; }
+            .modal-title { font-size: 1.2rem; }
+            .modal-content { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
+    <!-- 蛋糕掉落层 -->
     <div class="cake-bg" id="cakeBg">
         <span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- 弹窗层 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <div class="modal-title">❤️ 生日快乐，爸爸！</div>
+            <div class="modal-content">
+                亲爱的爸爸，<br>
+                您永远是我心中最坚实的依靠。<br>
+                愿您身体健康，天天开心！<br>
+                —— 永远爱您的孩子
+            </div>
+            <button class="modal-close-btn" id="modalCloseBtn">我知道了</button>
+        </div>
     </div>
 
     <div class="scene">
@@ -184,12 +206,11 @@
         <div class="card-wrapper" id="cardWrapper">
             <div class="card">
                 <div class="card-header">
-                    <div class="header-wish">���� 亲爱的爸爸，儿女祝您生日快乐 ����</div>
                     <div class="title">生 日 快 乐</div>
+                    <div class="header-wish">❤ 亲爱的爸爸，儿女祝您生日快乐 ❤</div>
                     <div class="subtitle">—— 致我最敬爱的爸爸 ——</div>
                 </div>
 
-                <!-- 翻页内容区 -->
                 <div class="card-content" id="cardContent">
                     <div class="page active">
                         <div class="text-line" data-text="亲爱的爸爸，"> </div>
@@ -207,19 +228,23 @@
                         <div class="text-line" data-text="愿您身体健康、笑容常在。"> </div>
                         <div class="text-line" data-text="愿幸福与温暖常伴您左右。"> </div>
                     </div>
-                    <!-- 第4页：署名特意去掉了打字动画，保证不缺失！ -->
                     <div class="page">
                         <div class="text-line" data-text="无论我走到哪里，"> </div>
                         <div class="text-line" data-text="您永远是我心中最坚实的依靠。"> </div>
-                        <!-- 这段不用打字动画，直接展示 -->
                         <div class="text-line sign">—— 永远爱您的孩子</div>
                         <div class="text-line hint-tip">���� 点击此处重新翻阅</div>
                     </div>
                 </div>
 
+                <!-- === 新增的 3 行歌词显示区 === -->
+                <div class="lyrics-container" id="lyricsContainer">
+                    <div class="lrc-line lrc-prev" id="lrcPrev"></div>
+                    <div class="lrc-line lrc-current" id="lrcCurrent">等待加载歌词...</div>
+                    <div class="lrc-line lrc-next" id="lrcNext"></div>
+                </div>
+
                 <div class="card-footer">
                     <div class="audio-bar">
-                        <!-- 图片按钮 -->
                         <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
                         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
                     </div>
@@ -243,11 +268,89 @@
             const audioBtn = document.getElementById('audioBtn');
             const progressFill = document.getElementById('progressFill');
 
+            // 歌词显示元素
+            const lrcPrev = document.getElementById('lrcPrev');
+            const lrcCurrent = document.getElementById('lrcCurrent');
+            const lrcNext = document.getElementById('lrcNext');
+
+            // 弹窗元素
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+
             let currentPageIndex = 0;
             let isTyping = false;
             let isOpen = false, isAnimating = false;
+            
+            // 歌词数据
+            let lyricsData = [];
+            let currentLyricIdx = -1;
+            let isLyricsReady = false;
 
-            // 打字动画逻辑
+            // ========== 1. 读取并解析 LRC 歌词文件 ==========
+            // 注意：请确保文件名必须是 father-song.lrc 并上传到和 index.html 同级目录
+            async function loadLRC() {
+                try {
+                    const response = await fetch('father-song.lrc');
+                    if (!response.ok) throw new Error("歌词文件不存在");
+                    const text = await response.text();
+                    parseLRC(text);
+                } catch (err) {
+                    console.warn("⚠️ 没有加载到 external LRC，将使用默认歌词");
+                    lrcCurrent.textContent = "���� 音乐已加载 ����";
+                    isLyricsReady = true; 
+                }
+            }
+
+            function parseLRC(lrcText) {
+                const lines = lrcText.split('\n');
+                const pattern = /\[(\d{2}):(\d{2})\.(\d{2})\]/g; 
+                lyricsData = [];
+                for (let line of lines) {
+                    let matches = [...line.matchAll(pattern)];
+                    if (matches.length > 0) {
+                        let text = line.replace(pattern, '').trim();
+                        if (!text) continue;
+                        for (let match of matches) {
+                            const min = parseInt(match[1]);
+                            const sec = parseInt(match[2]);
+                            const ms = parseInt(match[3]);
+                            const time = min * 60 + sec + (ms / 100);
+                            lyricsData.push({ time, text });
+                        }
+                    }
+                }
+                lyricsData.sort((a, b) => a.time - b.time);
+                if(lyricsData.length > 0) {
+                    lrcCurrent.textContent = lyricsData[0].text || "音乐已加载";
+                    isLyricsReady = true;
+                    console.log("✅ 成功加载 LRC 歌词:", lyricsData.length, "句");
+                } else {
+                    lrcCurrent.textContent = "���� 音乐已加载 ����";
+                }
+            }
+            loadLRC();
+
+            // ========== 2. 更新 3 行歌词 ==========
+            function updateLyrics(currentTime) {
+                if (!isLyricsReady || lyricsData.length === 0) return;
+                let activeIdx = 0;
+                for (let i = 0; i < lyricsData.length; i++) {
+                    if (currentTime >= lyricsData[i].time) activeIdx = i;
+                }
+                if (activeIdx !== currentLyricIdx) {
+                    currentLyricIdx = activeIdx;
+                    // 当前句
+                    lrcCurrent.textContent = lyricsData[activeIdx].text;
+                    // 上一句
+                    if (activeIdx > 0) lrcPrev.textContent = lyricsData[activeIdx - 1].text;
+                    else lrcPrev.textContent = '';
+                    // 下一句
+                    if (activeIdx < lyricsData.length - 1) lrcNext.textContent = lyricsData[activeIdx + 1].text;
+                    else lrcNext.textContent = '';
+                }
+            }
+
+            // ========== 3. 翻页打字逻辑 ==========
             function typeWriter(element, text, index = 0, callback) {
                 if (index < text.length) {
                     element.textContent += text[index];
@@ -260,7 +363,6 @@
             }
 
             function triggerPageAnimation(pageElement) {
-                // 只对有 data-text 属性的行进行动画，署名直接跳过
                 const lines = pageElement.querySelectorAll('.text-line[data-text]');
                 lines.forEach((line, index) => {
                     line.textContent = '';
@@ -279,6 +381,9 @@
                 const nextPage = document.querySelector(`.page:nth-child(${currentPageIndex + 2})`);
 
                 if (currentPageIndex === 3) {
+                    // ========== 触发结束弹窗 ==========
+                    modalOverlay.style.display = 'flex';
+                    
                     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                     document.querySelector('.page:first-child').classList.add('active');
                     currentPageIndex = 0;
@@ -296,6 +401,17 @@
                 }
             }
 
+            // 弹窗关闭事件
+            modalCloseBtn.addEventListener('click', () => {
+                modalOverlay.style.display = 'none';
+            });
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    modalOverlay.style.display = 'none';
+                }
+            });
+
+            // ========== 4. 信封与音乐逻辑 ==========
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
@@ -328,7 +444,6 @@
                 setTimeout(() => { isAnimating = false; }, 500);
             }
 
-            // === 修复：按钮切换逻辑 ===
             function tryPlayMusic() {
                 const playPromise = bgAudio.play();
                 if (playPromise !== undefined) {
@@ -336,10 +451,8 @@
                 }
             }
             function updateAudioBtn(playing) {
-                // 必须换回 play-btn.png
                 audioBtn.src = playing ? 'pause-btn.png' : 'play-btn.png';
             }
-
             function toggleAudio() {
                 if (bgAudio.paused) {
                     bgAudio.play().then(() => updateAudioBtn(true)).catch(() => {});
@@ -354,6 +467,7 @@
             audioBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleAudio(); });
 
             bgAudio.addEventListener('timeupdate', () => {
+                if (isOpen) updateLyrics(bgAudio.currentTime);
                 if (bgAudio.duration && isFinite(bgAudio.duration)) {
                     progressFill.style.width = Math.min(100, (bgAudio.currentTime / bgAudio.duration) * 100) + '%';
                 }
