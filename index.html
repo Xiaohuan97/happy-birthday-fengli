@@ -49,7 +49,7 @@
             position: relative; z-index: 1;
         }
 
-        /* ==================== 纯CSS信封（绝不卡顿，瞬间加载） ==================== */
+        /* ==================== 纯CSS信封 ==================== */
         .envelope-wrapper {
             position: relative; width: 320px; max-width: 85vw; height: 220px;
             cursor: pointer; transition: opacity 0.5s ease;
@@ -77,7 +77,6 @@
             transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1);
             backface-visibility: hidden;
         }
-        /* 小邮票 */
         .env-flap::after {
             content: '生日快乐'; position: absolute; top: 10px; right: 10px;
             border: 1.5px dashed #c0392b; padding: 2px 5px; font-size: 0.6rem; 
@@ -95,15 +94,16 @@
         .env-seal::before { content: '♥'; font-size: 0.8rem; color: rgba(255,255,255,0.7); }
         .envelope-wrapper.flap-open .env-seal { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
 
-        /* ==================== 新版翻页贺卡（超大关怀版字体） ==================== */
+        /* ==================== 新版纯白简约贺卡（清晰区分背景） ==================== */
         .card-wrapper { display: none; width: 340px; max-width: 95vw; }
         .card-wrapper.visible { display: flex; animation: cardAppear 0.5s ease-out forwards; }
         @keyframes cardAppear { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
 
         .card {
-            background: #fefcf8; border: 8px solid transparent;
-            border-image: repeating-linear-gradient(45deg, #c9a468, #c9a468 8px, transparent 8px, transparent 10px) 8;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12); border-radius: 12px;
+            background: #fefcfb; /* 偏米白的柔和白色 */
+            border: 1px solid rgba(220, 200, 180, 0.3); /* 极浅的边框，与背景微区分 */
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); /* 柔和的阴影，像一张悬浮的白卡片 */
             width: 100%; display: flex; flex-direction: column; position: relative;
             padding: 20px 16px 18px;
         }
@@ -117,36 +117,36 @@
         .page.active { display: flex; flex-direction: column; gap: 6px; }
         @keyframes pageFadeIn { 0% { opacity: 0; transform: translateX(8px); } 100% { opacity: 1; transform: translateX(0); } }
 
-        /* 核心改动：用下划线模拟信纸 */
+        /* 信纸下划线排版 */
         .text-line {
             font-size: 1.25rem; line-height: 2.4; color: #3a2f28; 
             font-family: 'KaiTi', 'STKaiti', serif; opacity: 0;
             letter-spacing: 0.06em; text-align: left;
-            display: inline-block; /* 关键：让下划线正好和字一样长 */
-            border-bottom: 1px solid rgba(180, 150, 120, 0.25); /* 精致的浅色下划线 */
+            display: inline-block;
+            border-bottom: 1px solid rgba(180, 150, 120, 0.15); /* 极淡的下划线 */
             padding-bottom: 2px;
-            width: 100%; /* 文字不够长的时候，自动适应 */
+            width: 100%;
         }
         
-        /* 签名不需要下划线 */
+        /* 签名和提示不需要下划线 */
         .text-line.sign {
-            border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 10px;
+            border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 15px;
         }
         .text-line.hint-tip {
-            border-bottom: none; text-align: center; color: rgba(140,110,80,0.4); font-size: 0.8rem; padding-top: 10px;
+            border-bottom: none; text-align: center; color: rgba(140,110,80,0.4); font-size: 0.8rem; padding-top: 8px;
         }
 
-        /* 修复底部按钮，改用纯CSS（绝不碎裂） */
-        .card-footer { text-align: center; padding-top: 16px; }
+        /* ==================== 恢复成你之前设计的图片按钮 ==================== */
+        .card-footer { text-align: center; padding-top: 16px; display: flex; justify-content: center; }
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .audio-btn {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: #c0392b; color: #fff; border: none;
-            font-size: 0.8rem; cursor: pointer; transition: transform 0.2s ease;
-            display: flex; align-items: center; justify-content: center;
+        .audio-img-btn {
+            width: 36px; height: 36px;
+            object-fit: contain; cursor: pointer;
+            transition: transform 0.2s ease;
         }
-        .audio-btn:active { transform: scale(0.9); }
-        .audio-btn.playing { background: #a93226; }
+        .audio-img-btn:active {
+            transform: scale(0.9); /* 点击时轻微缩小，模拟按压 */
+        }
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
 
@@ -154,7 +154,6 @@
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
         .hint.hidden { visibility: hidden; }
 
-        /* 适配手机 */
         @media (max-width: 500px) {
             .envelope-wrapper { width: 88vw; height: 200px; }
             .card { padding: 16px 12px 14px; }
@@ -187,7 +186,7 @@
                     <div class="subtitle">—— 致我最敬爱的爸爸 ——</div>
                 </div>
 
-                <!-- 翻页内容区，采用下划线排版 -->
+                <!-- 翻页内容 -->
                 <div class="card-content" id="cardContent">
                     <div class="page active">
                         <div class="text-line" data-text="亲爱的爸爸，"> </div>
@@ -205,18 +204,21 @@
                         <div class="text-line" data-text="愿您身体健康、笑容常在。"> </div>
                         <div class="text-line" data-text="愿幸福与温暖常伴您左右。"> </div>
                     </div>
+                    <!-- 第四页，署名特别处理 -->
                     <div class="page">
                         <div class="text-line" data-text="无论我走到哪里，"> </div>
                         <div class="text-line" data-text="您永远是我心中最坚实的依靠。"> </div>
+                        <!-- 保持你之前的红色署名 -->
                         <div class="text-line sign">—— 永远爱您的孩子</div>
                         <div class="text-line hint-tip">���� 点击此处重新翻阅</div>
                     </div>
                 </div>
 
-                <!-- 纯CSS红色按钮控制区（彻底修复图片碎裂） -->
+                <!-- 图片按钮控制区 -->
                 <div class="card-footer">
                     <div class="audio-bar">
-                        <button class="audio-btn" id="audioBtn" title="播放/暂停背景音乐">▶</button>
+                        <!-- 关键修改：换成之前的图片按钮 -->
+                        <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
                         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
                     </div>
                 </div>
@@ -243,7 +245,7 @@
             let isTyping = false;
             let isOpen = false, isAnimating = false;
 
-            // 打字动画
+            // 书写动画逻辑
             function typeWriter(element, text, index = 0, callback) {
                 if (index < text.length) {
                     element.textContent += text[index];
@@ -273,7 +275,7 @@
                 const currentPage = document.querySelector(`.page:nth-child(${currentPageIndex + 1})`);
                 const nextPage = document.querySelector(`.page:nth-child(${currentPageIndex + 2})`);
 
-                // 翻到最后一页时重置
+                // 最后一页时循环回第一页
                 if (currentPageIndex === 3) {
                     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                     document.querySelector('.page:first-child').classList.add('active');
@@ -292,7 +294,7 @@
                 }
             }
 
-            // 打开/关闭信封
+            // 打开信封与音乐逻辑
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
@@ -318,7 +320,6 @@
                 envelopeWrapper.classList.remove('flap-open');
                 hintText.classList.remove('hidden');
                 cakeBg.classList.remove('active');
-                // 重置
                 currentPageIndex = 0;
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 document.querySelector('.page:first-child').classList.add('active');
@@ -326,17 +327,17 @@
                 setTimeout(() => { isAnimating = false; }, 500);
             }
 
-            // 音乐控制
             function tryPlayMusic() {
                 const playPromise = bgAudio.play();
                 if (playPromise !== undefined) {
                     playPromise.then(() => updateAudioBtn(true)).catch(() => {});
                 }
             }
+            // 换回图片后，切图逻辑改变
             function updateAudioBtn(playing) {
-                audioBtn.textContent = playing ? '⏸' : '▶';
-                audioBtn.classList.toggle('playing', playing);
+                audioBtn.src = playing ? 'pause-btn.png' : 'play-btn.png';
             }
+
             function toggleAudio() {
                 if (bgAudio.paused) {
                     bgAudio.play().then(() => updateAudioBtn(true)).catch(() => {});
@@ -345,7 +346,6 @@
                 }
             }
 
-            // 事件绑定
             envelopeWrapper.addEventListener('click', openEnvelope);
             cardContent.addEventListener('click', changePage);
             cardWrapper.addEventListener('dblclick', closeCard);
