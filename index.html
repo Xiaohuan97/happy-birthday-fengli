@@ -87,7 +87,7 @@
         .card {
             background: #fefcfb; border: 1px solid rgba(220, 200, 180, 0.3); border-radius: 16px;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); width: 100%; display: flex; flex-direction: column;
-            padding: 24px 16px 18px; position: relative;
+            padding: 24px 16px 14px; position: relative;
         }
 
         .card-header { text-align: center; padding-bottom: 16px; display: flex; flex-direction: column; align-items: center; }
@@ -109,13 +109,24 @@
         .text-line.sign { border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 12px; letter-spacing: 0.08em; }
         .text-line.hint-tip { border-bottom: none; text-align: center; color: rgba(140,110,80,0.45); font-size: 0.8rem; padding-top: 10px; }
 
-        /* === 底部纯音乐控制（歌词已删除） === */
+        /* === 底部音乐控制 === */
         .card-footer { text-align: center; padding-top: 12px; display: flex; justify-content: center; }
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
         .audio-img-btn { width: 36px; height: 36px; object-fit: contain; cursor: pointer; transition: transform 0.2s ease; }
         .audio-img-btn:active { transform: scale(0.9); }
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
+
+        /* ==================== 新增：翻页提示 ==================== */
+        .tap-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: rgba(140, 110, 80, 0.5);
+            font-family: 'KaiTi', 'STKaiti', serif;
+            padding-top: 12px; /* 与音乐控制条间隔 */
+            padding-bottom: 2px;
+            letter-spacing: 0.1em;
+        }
 
         .hint { margin-top: 20px; font-size: 0.8rem; color: rgba(140,110,80,0.55); letter-spacing: 0.06em; animation: hintPulse 2.2s infinite ease-in-out; }
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
@@ -214,17 +225,20 @@
                         <div class="text-line" data-text="无论我走到哪里，"> </div>
                         <div class="text-line" data-text="您永远是我心中最坚实的依靠。"> </div>
                         <div class="text-line sign">—— 永远爱您的孩子</div>
-                        <div class="text-line hint-tip">���� 点击此处重新翻阅</div>
+                        <div class="text-line hint-tip">🎉 点击此处重新翻阅</div>
                     </div>
                 </div>
 
-                <!-- 底部纯音乐控制区（歌词区域已彻底删除） -->
+                <!-- 音乐控制区 -->
                 <div class="card-footer">
                     <div class="audio-bar">
                         <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
                         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
                     </div>
                 </div>
+
+                <!-- 新增：点击屏幕翻页提示 -->
+                <div class="tap-hint">点击屏幕翻页 🎈</div>
             </div>
         </div>
 
