@@ -11,33 +11,27 @@
             display: flex; align-items: center; justify-content: center;
             background-color: #f5efe6;
             background-image: radial-gradient(ellipse at 50% 50%, #fdfaf5 0%, #f5efe6 60%, #ede3d3 100%);
-            font-family: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', serif;
+            font-family: 'KaiTi', 'STKaiti', '华文楷体', 'Noto Serif SC', serif;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
             padding: 20px;
         }
 
-        /* ==================== 顶置蛋糕飘落特效 ==================== */
+        /* ==================== 蛋糕特效 ==================== */
         .cake-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden; 
-            pointer-events: none; /* 绝对不挡手 */
-            z-index: 9999; /* 绝对置顶 */
-            will-change: transform; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; pointer-events: none; z-index: 9999; 
+            will-change: transform; display: none;
         }
+        .cake-bg.active { display: block; }
         .cake-bg span {
-            position: absolute;
-            display: block; 
-            width: 40px; height: 40px; 
-            top: -50px; 
+            position: absolute; display: block; width: 40px; height: 40px; top: -50px; 
             background-size: contain; background-position: center; background-repeat: no-repeat;
             background-color: transparent;
             animation: cakeFall 10s linear infinite;
             filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15)); 
         }
-        
         .cake-bg span:nth-child(1) { left: 10%; width: 30px; height: 30px; background-image: url('cake1.png'); animation-delay: 0s; animation-duration: 12s; }
         .cake-bg span:nth-child(2) { left: 25%; width: 50px; height: 50px; background-image: url('cake2.png'); animation-delay: 2s; animation-duration: 9s; }
         .cake-bg span:nth-child(3) { left: 40%; width: 40px; height: 40px; background-image: url('cake3.png'); animation-delay: 4s; animation-duration: 14s; }
@@ -46,7 +40,6 @@
         .cake-bg span:nth-child(6) { left: 90%; width: 45px; height: 45px; background-image: url('cake2.png'); animation-delay: 5s; animation-duration: 11s; }
         .cake-bg span:nth-child(7) { left: 5%; width: 50px; height: 50px; background-image: url('cake3.png'); animation-delay: 7s; animation-duration: 15s; }
         .cake-bg span:nth-child(8) { left: 50%; width: 30px; height: 30px; background-image: url('cake4.png'); animation-delay: 6s; animation-duration: 8s; }
-
         @keyframes cakeFall {
             0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0.2; }
             100% { transform: translateY(115vh) rotate(720deg) scale(1.2); opacity: 1; }
@@ -58,9 +51,11 @@
             position: relative; z-index: 1;
         }
 
-        /* ==================== 信封 ==================== */
+        /* ==================== 替换为新生成的信封图片 ==================== */
         .envelope-wrapper {
             position: relative; width: 380px; max-width: 90vw; height: 260px;
+            background-image: url('envelope-closed.png');
+            background-size: contain; background-position: center; background-repeat: no-repeat;
             cursor: pointer; transition: opacity 0.5s ease, transform 0.5s ease;
             animation: gentleFloat 4s ease-in-out infinite;
         }
@@ -68,79 +63,74 @@
         .envelope-wrapper:hover { animation-play-state: paused; }
         .envelope-wrapper.envelope-hidden { display: none !important; }
 
-        .envelope-body {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
-            background: linear-gradient(135deg, #ebd6b0 0%, #dab88b 100%);
-            border-radius: 6px; box-shadow: 0 8px 28px rgba(0,0,0,0.14); z-index: 3;
-        }
-        .envelope-body::after {
-            content: '致·亲爱的爸爸'; position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); color: #5a3f28; font-size: 1.6rem;
-            font-weight: bold; letter-spacing: 0.08em; opacity: 0.8;
-        }
-
-        .envelope-flap {
-            position: absolute; top: 0; left: 0; width: 100%; height: 49%;
-            background: linear-gradient(180deg, #f3e6d2 0%, #e8d5b5 15%, #dfcaa6 40%, #d9c29d 65%, #dcc7a4 100%);
-            clip-path: polygon(0 0, 50% 100%, 100% 0);
-            z-index: 6; transform-origin: top center;
-            transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08); cursor: pointer; backface-visibility: hidden;
-        }
-        .envelope-wrapper.flap-open .envelope-flap {
-            transform: rotateX(-180deg);
-            z-index: 0;
-            box-shadow: none;
-            opacity: 0; /* 绝对修复：翻过去后直接隐藏，杜绝任何白色渲染残影 */
-        }
-
-        .seal {
-            position: absolute; top: 56%; left: 50%;
-            transform: translate(-50%, -50%); width: 34px; height: 34px;
-            background: radial-gradient(ellipse at 35% 30%, #e74c3c 0%, #c0392b 40%, #8b1a1a 100%);
-            border-radius: 50%; z-index: 7; pointer-events: none;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.28), inset 0 1px 2px rgba(255,255,255,0.2);
-            transition: all 0.5s ease; display: flex; align-items: center; justify-content: center;
-        }
-        .seal::before { content: '♥'; font-size: 0.9rem; color: rgba(255,255,255,0.7); }
-        .envelope-wrapper.flap-open .seal { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
-
-        /* ==================== 贺卡 ==================== */
-        .card-wrapper { display: none; width: 380px; max-width: 90vw; animation: cardAppear 0.5s ease-out forwards; }
-        .card-wrapper.visible { display: block; }
-        @keyframes cardAppear { 0% { opacity: 0; transform: translateY(20px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        /* ==================== 新版翻页贺卡结构 ==================== */
+        .card-wrapper { display: none; width: 380px; max-width: 90vw; flex-direction: column; align-items: center; }
+        .card-wrapper.visible { display: flex; animation: cardAppear 0.5s ease-out forwards; }
+        @keyframes cardAppear { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
 
         .card {
             background: #fefcf8; border: 10px solid transparent;
             border-image: repeating-linear-gradient(45deg, #c9a468, #c9a468 10px, transparent 10px, transparent 12px) 10;
             box-shadow: 0 8px 32px rgba(0,0,0,0.12); border-radius: 12px;
-            overflow: hidden; display: flex; flex-direction: column; position: relative;
+            width: 100%; display: flex; flex-direction: column; position: relative;
         }
 
-        .card-blessing { padding: 32px 22px 14px; text-align: center; position: relative; z-index: 2; }
-        .card-blessing .title { font-size: 2.2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin: 4px 0; }
-        .card-blessing .subtitle { font-size: 0.9rem; color: #b8862d; letter-spacing: 0.1em; margin-bottom: 16px; }
-        .card-blessing .greeting { font-size: 0.95rem; color: #3a2f28; line-height: 2.2; letter-spacing: 0.03em; }
-        .card-blessing .greeting .red { color: #c0392b; font-weight: 600; }
-        .card-blessing .signature { margin-top: 16px; font-size: 1.1rem; color: #5a4a3a; text-align: right; }
+        /* 【1. 固定的页眉】 */
+        .card-header {
+            padding: 28px 20px 0; text-align: center;
+            position: relative; z-index: 2; flex-shrink: 0;
+        }
+        .card-header .title { font-size: 2.2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+        .card-header .subtitle { font-size: 0.9rem; color: #b8862d; letter-spacing: 0.1em; margin-bottom: 16px; }
 
-        .divider { width: 55%; margin: 8px auto 6px; height: 1px; background: linear-gradient(90deg, transparent, rgba(180,140,100,0.45), transparent); position: relative; }
+        /* 【2. 可翻页的正文（使用信纸图片作为底图）】 */
+        .card-body {
+            flex: 1; position: relative; min-height: 220px; padding: 0; overflow: hidden;
+        }
+        /* 用生成的横线信纸图片作为背景 */
+        .paper-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('paper-bg.png');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            pointer-events: none; z-index: 1;
+        }
+        
+        .card-content {
+            position: relative; z-index: 2; height: 100%;
+            padding: 10px 20px 12px;
+            cursor: pointer;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .page {
+            display: none; flex-direction: column; justify-content: center;
+            width: 100%;
+            animation: pageFadeIn 0.6s ease-out forwards;
+        }
+        .page.active { display: flex; }
+        @keyframes pageFadeIn { 0% { opacity: 0; transform: translateX(8px); } 100% { opacity: 1; transform: translateX(0); } }
+
+        /* 关怀版大字与手写体 */
+        .text-line {
+            font-size: 1.2rem; line-height: 2.2; color: #3a2f28; 
+            font-family: 'KaiTi', 'STKaiti', serif; margin-bottom: 4px; opacity: 0;
+            position: relative; letter-spacing: 0.06em; text-align: left;
+        }
+        
+        /* 【3. 固定的页脚】 */
+        .card-footer {
+            flex-shrink: 0; padding: 0 12px 18px; margin-top: 8px;
+            position: relative; z-index: 2;
+        }
+        .divider { width: 55%; margin: 0 auto 10px; height: 1px; background: linear-gradient(90deg, transparent, rgba(180,140,100,0.45), transparent); position: relative; }
         .divider::after { content: '♪'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fefcf8; padding: 0 14px; color: #b8862d; font-size: 0.8rem; }
 
-        /* ==================== 音乐控制区（适配新按钮图片） ==================== */
-        .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 0 18px; position: relative; z-index: 2; margin: 0 12px; }
-        .audio-img-btn {
-            width: 36px; height: 36px;
-            object-fit: contain; /* 保持原图比例 */
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        .audio-img-btn:active {
-            transform: scale(0.9); /* 点击时轻微缩小，模拟按压感 */
-        }
+        .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .audio-img-btn { width: 36px; height: 36px; object-fit: contain; cursor: pointer; transition: transform 0.2s ease; }
+        .audio-img-btn:active { transform: scale(0.9); }
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
 
+        /* 底部提示 */
         .hint { margin-top: 20px; font-size: 0.8rem; color: rgba(140,110,80,0.55); letter-spacing: 0.06em; animation: hintPulse 2.2s infinite ease-in-out; }
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
         .hint.hidden { visibility: hidden; }
@@ -149,55 +139,80 @@
             body { padding: 10px; }
             .envelope-wrapper { width: 90vw; height: 220px; }
             .card-wrapper { width: 95vw; }
-            .card-blessing { padding: 24px 16px 12px; }
-            .card-blessing .title { font-size: 1.8rem; }
-            .card-blessing .greeting { font-size: 0.85rem; line-height: 1.8; }
-            .seal { width: 28px; height: 28px; }
-            .envelope-body::after { font-size: 1.2rem; }
-            .audio-bar { margin-bottom: 20px; }
+            .card-header { padding-top: 20px; }
+            .card-header .title { font-size: 1.8rem; }
+            .card-content { padding: 0 16px 6px; min-height: 200px; }
+            .text-line { font-size: 1rem; line-height: 2; }
+            .audio-bar { margin-bottom: 0; }
+            .audio-img-btn { width: 32px; height: 32px; }
         }
     </style>
 </head>
 <body>
-    <!-- 绝对置顶的小蛋糕背景层 -->
-    <div class="cake-bg">
+    <div class="cake-bg" id="cakeBg">
         <span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
     </div>
 
     <div class="scene">
-        <!-- 信封 -->
+        <!-- 替换为新生成的信封 -->
         <div class="envelope-wrapper" id="envelopeWrapper">
-            <div class="envelope-body"></div>
-            <div class="envelope-flap" id="envelopeFlap"></div>
-            <div class="seal" id="seal"></div>
+            <!-- 信封图片直接由 background-image 控制 -->
         </div>
 
-        <!-- 贺卡 -->
         <div class="card-wrapper" id="cardWrapper">
             <div class="card">
-                <div class="card-blessing">
+                
+                <!-- 固定页眉区 -->
+                <div class="card-header">
                     <div class="title">生 日 快 乐</div>
                     <div class="subtitle">—— 致我最敬爱的爸爸 ——</div>
-                    <div class="greeting">
-                        亲爱的<span class="red">爸爸</span>，<br><br>
-                        今天是您的生日，<br>我想对您说一声：<br>
-                        <span class="red">辛苦了，谢谢您！</span><br><br>
-                        感谢您多年来的养育与呵护，<br>
-                        您的每一滴汗水、每一根白发，<br>都是为我撑起一片天的印记。<br><br>
-                        愿时光慢一些，<br>愿您<span class="red">身体健康、笑容常在</span>，<br>
-                        愿幸福与温暖常伴您左右。<br>无论我走到哪里，<br>您永远是我心中最坚实的依靠。
+                </div>
+
+                <!-- 可翻页正文区 (带信纸底图) -->
+                <div class="card-body">
+                    <div class="paper-bg"></div>
+                    <div class="card-content" id="cardContent">
+                        <!-- 第1页 -->
+                        <div class="page active" data-index="0">
+                            <div class="text-line" data-text="亲爱的爸爸，"></div>
+                            <div class="text-line" data-text="今天是您的生日。"></div>
+                            <div class="text-line" data-text="我想对您说一声："></div>
+                            <div class="text-line" data-text="辛苦了，谢谢您！"></div>
+                        </div>
+                        <!-- 第2页 -->
+                        <div class="page" data-index="1">
+                            <div class="text-line" data-text="感谢您多年来的养育与呵护。"></div>
+                            <div class="text-line" data-text="您的每一滴汗水、每一根白发，"></div>
+                            <div class="text-line" data-text="都是为我撑起一片天的印记。"></div>
+                        </div>
+                        <!-- 第3页 -->
+                        <div class="page" data-index="2">
+                            <div class="text-line" data-text="愿时光慢一些。"></div>
+                            <div class="text-line" data-text="愿您身体健康、笑容常在。"></div>
+                            <div class="text-line" data-text="愿幸福与温暖常伴您左右。"></div>
+                        </div>
+                        <!-- 第4页 -->
+                        <div class="page" data-index="3">
+                            <div class="text-line" data-text="无论我走到哪里，"></div>
+                            <div class="text-line" data-text="您永远是我心中最坚实的依靠。"></div>
+                            <div class="text-line" style="margin-top: 20px; text-align: right; opacity: 1; color: #c0392b; font-size: 1.1rem;">
+                                —— 永远爱您的孩子
+                            </div>
+                            <div style="text-align: center; margin-top: 10px; color: rgba(140,110,80,0.4); font-size: 0.8rem; font-family: sans-serif;" id="pageHint">🎉 点击此处重阅</div>
+                        </div>
                     </div>
-                    <div class="signature">—— 永远爱您的孩子</div>
                 </div>
 
-                <div class="divider"></div>
-
-                <!-- 更新：使用你生成的图片按钮，不再用CSS画圆 -->
-                <div class="audio-bar">
-                    <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
-                    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+                <!-- 固定页脚区 -->
+                <div class="card-footer">
+                    <div class="divider"></div>
+                    <div class="audio-bar">
+                        <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
+                        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+                    </div>
                 </div>
+
             </div>
         </div>
 
@@ -208,13 +223,19 @@
 
     <script>
         (function() {
+            const cakeBg = document.getElementById('cakeBg');
             const envelopeWrapper = document.getElementById('envelopeWrapper');
             const cardWrapper = document.getElementById('cardWrapper');
+            const cardContent = document.getElementById('cardContent');
             const hintText = document.getElementById('hintText');
             const bgAudio = document.getElementById('bgAudio');
             const audioBtn = document.getElementById('audioBtn');
             const progressFill = document.getElementById('progressFill');
+            const pageHint = document.getElementById('pageHint');
 
+            let currentPageIndex = 0;
+            let isTyping = false;
+            let typeTimer = null;
             let isOpen = false, isAnimating = false, isAudioReady = false;
             let musicTriggered = false;
 
@@ -222,31 +243,83 @@
             bgAudio.addEventListener('loadeddata', () => { isAudioReady = true; });
             bgAudio.addEventListener('canplaythrough', () => { isAudioReady = true; });
 
-            function tryPlayMusic() {
-                if (musicTriggered || !bgAudio.src) return;
-                const playPromise = bgAudio.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        musicTriggered = true; updateAudioBtn(true);
-                    }).catch(() => {});
+            // ========== 打字动画函数 ==========
+            function typeWriter(element, text, index = 0, callback) {
+                if (index < text.length) {
+                    element.textContent += text[index];
+                    let delay = Math.random() * 60 + 40; 
+                    typeTimer = setTimeout(() => typeWriter(element, text, index + 1, callback), delay);
+                } else {
+                    element.style.opacity = '1';
+                    if (callback) callback();
                 }
             }
 
-            // 重点修改：更新音乐图标的切换逻辑
-            function updateAudioBtn(playing) {
-                audioBtn.src = playing ? 'pause-btn.png' : 'play-btn.png';
+            function triggerPageAnimation(pageElement) {
+                const lines = pageElement.querySelectorAll('.text-line[data-text]');
+                lines.forEach((line, index) => {
+                    line.textContent = '';
+                    line.style.opacity = '0';
+                    setTimeout(() => {
+                        typeWriter(line, line.dataset.text, 0, () => {
+                            if(index === lines.length - 1) {
+                                isTyping = false;
+                            }
+                        });
+                    }, index * 400 + 200);
+                });
             }
 
+            function changePage() {
+                if (isTyping) return;
+
+                const currentPage = document.querySelector(`.page[data-index="${currentPageIndex}"]`);
+                const nextPage = document.querySelector(`.page[data-index="${currentPageIndex + 1}"]`);
+
+                // 如果是最后一页（data-index="3"），点击则重置翻页
+                if (currentPageIndex === 3) {
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    const firstPage = document.querySelector(`.page[data-index="0"]`);
+                    firstPage.classList.add('active');
+                    currentPageIndex = 0;
+                    isTyping = true;
+                    triggerPageAnimation(firstPage);
+                    pageHint.textContent = '🎉 点击此处重阅';
+                    return;
+                }
+
+                if (currentPage) currentPage.classList.remove('active');
+                if (nextPage) {
+                    nextPage.classList.add('active');
+                    isTyping = true;
+                    triggerPageAnimation(nextPage);
+                    currentPageIndex++;
+                }
+            }
+
+            // ========== 打开信封 ==========
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
-                envelopeWrapper.classList.add('flap-open');
+                
+                // 第一步：将信封图片替换为打开的状态
+                envelopeWrapper.style.backgroundImage = "url('envelope-open.png')";
+                // 去掉飘浮动画
+                envelopeWrapper.style.animation = 'none';
+
                 tryPlayMusic();
                 
+                // 第二步：0.7秒后隐藏信封，显示贺卡
                 setTimeout(() => {
                     envelopeWrapper.style.display = 'none'; 
                     cardWrapper.classList.add('visible');
                     hintText.classList.add('hidden');
+                    // 启动首页打字动画
+                    const firstPage = document.querySelector(`.page[data-index="0"]`);
+                    isTyping = true;
+                    triggerPageAnimation(firstPage);
+                    // 启动蛋糕掉落
+                    cakeBg.classList.add('active');
                     isAnimating = false;
                 }, 700);
             }
@@ -257,9 +330,29 @@
                 bgAudio.pause(); updateAudioBtn(false);
                 cardWrapper.classList.remove('visible');
                 envelopeWrapper.style.display = ''; 
-                envelopeWrapper.classList.remove('envelope-hidden', 'flap-open');
+                envelopeWrapper.style.backgroundImage = "url('envelope-closed.png')";
+                envelopeWrapper.style.animation = 'gentleFloat 4s ease-in-out infinite';
                 hintText.classList.remove('hidden');
+                cakeBg.classList.remove('active');
+                // 重置翻页状态
+                currentPageIndex = 0;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.querySelector(`.page[data-index="0"]`).classList.add('active');
+                document.querySelectorAll('.text-line[data-text]').forEach(l => { l.textContent = ''; l.style.opacity = '0'; });
+                pageHint.textContent = '🎉 点击此处重阅';
                 setTimeout(() => { isAnimating = false; }, 500);
+            }
+
+            function tryPlayMusic() {
+                if (musicTriggered || !bgAudio.src) return;
+                const playPromise = bgAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => { musicTriggered = true; updateAudioBtn(true); }).catch(() => {});
+                }
+            }
+
+            function updateAudioBtn(playing) {
+                audioBtn.src = playing ? 'pause-btn.png' : 'play-btn.png';
             }
 
             function toggleAudio() {
@@ -271,7 +364,9 @@
                 }
             }
 
+            // ========== 事件绑定 ==========
             envelopeWrapper.addEventListener('click', (e) => { if (!isOpen && !isAnimating) openEnvelope(); });
+            cardContent.addEventListener('click', (e) => { if (isOpen && !isAnimating) changePage(); });
             cardWrapper.addEventListener('dblclick', (e) => { if (isOpen && !isAnimating) closeCard(); });
             audioBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleAudio(); });
 
@@ -285,7 +380,11 @@
             bgAudio.addEventListener('ended', () => { updateAudioBtn(false); progressFill.style.width = '100%'; });
 
             document.addEventListener('keydown', (e) => {
-                if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); if (!isOpen && !isAnimating) openEnvelope(); else if (isOpen && !isAnimating) toggleAudio(); }
+                if (e.key === ' ' || e.code === 'Space') { e.preventDefault(); 
+                    if (!isOpen && !isAnimating) openEnvelope(); 
+                    else if (isOpen && !isAnimating) changePage(); 
+                    else toggleAudio(); 
+                }
                 if (e.key === 'Escape' || e.code === 'Escape') { if (isOpen && !isAnimating) closeCard(); }
             });
         })();
