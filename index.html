@@ -109,22 +109,7 @@
         .text-line.sign { border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 12px; letter-spacing: 0.08em; }
         .text-line.hint-tip { border-bottom: none; text-align: center; color: rgba(140,110,80,0.45); font-size: 0.8rem; padding-top: 10px; }
 
-        /* === KTV 三行歌词显示区域 === */
-        .lyrics-container {
-            position: relative; z-index: 2; margin-top: 8px; padding: 8px 4px;
-            min-height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: rgba(255, 248, 235, 0.5); border-radius: 8px; overflow: hidden;
-        }
-        .lrc-line { text-align: center; width: 100%; transition: all 0.4s ease; line-height: 1.6; }
-        .lrc-prev, .lrc-next {
-            font-size: 0.85rem; color: #a39182; opacity: 0.4;
-        }
-        .lrc-current {
-            font-size: 1.2rem; color: #c0392b; font-weight: 700; opacity: 1;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
-        }
-
-        /* === 底部按钮 === */
+        /* === 底部纯音乐控制（歌词已删除） === */
         .card-footer { text-align: center; padding-top: 12px; display: flex; justify-content: center; }
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
         .audio-img-btn { width: 36px; height: 36px; object-fit: contain; cursor: pointer; transition: transform 0.2s ease; }
@@ -166,9 +151,6 @@
             .card-content { min-height: 160px; }
             .text-line { font-size: 1.1rem; line-height: 2; }
             .env-body::after { font-size: 1.1rem; }
-            .lyrics-container { min-height: 60px; margin-top: 6px; }
-            .lrc-current { font-size: 1rem; }
-            .lrc-prev, .lrc-next { font-size: 0.75rem; }
             .modal-box { padding: 20px; width: 85vw; }
             .modal-title { font-size: 1.2rem; }
             .modal-content { font-size: 1rem; }
@@ -236,13 +218,7 @@
                     </div>
                 </div>
 
-                <!-- === 三行歌词显示区 (精准修正版时间已嵌入) === -->
-                <div class="lyrics-container" id="lyricsContainer">
-                    <div class="lrc-line lrc-prev" id="lrcPrev"></div>
-                    <div class="lrc-line lrc-current" id="lrcCurrent">���� 点击信封，聆听心声 ����</div>
-                    <div class="lrc-line lrc-next" id="lrcNext"></div>
-                </div>
-
+                <!-- 底部纯音乐控制区（歌词区域已彻底删除） -->
                 <div class="card-footer">
                     <div class="audio-bar">
                         <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
@@ -268,11 +244,6 @@
             const audioBtn = document.getElementById('audioBtn');
             const progressFill = document.getElementById('progressFill');
 
-            // 歌词显示元素
-            const lrcPrev = document.getElementById('lrcPrev');
-            const lrcCurrent = document.getElementById('lrcCurrent');
-            const lrcNext = document.getElementById('lrcNext');
-
             // 弹窗元素
             const modalOverlay = document.getElementById('modalOverlay');
             const modalCloseBtn = document.getElementById('modalCloseBtn');
@@ -280,73 +251,8 @@
             let currentPageIndex = 0;
             let isTyping = false;
             let isOpen = false, isAnimating = false;
-            
-            // ==========================================
-            // ���� 你的精确修正版歌词时间轴（已强制同步）
-            // ==========================================
-            const lyricsData = [
-                { time: 0.00, text: '生日感恩暖阳' },
-                { time: 0.50, text: '演唱：匿名网友。 / 豆包' },
-                { time: 3.80, text: '晨光爬过粥锅沿' },
-                { time: 7.10, text: '您擦胡茬笑眼弯' },
-                { time: 10.30, text: '公文包挂门把边' },
-                { time: 13.60, text: '喊我快趁热添饭' },
-                { time: 16.90, text: '阳光绕着您转圈圈' },
-                { time: 20.20, text: '笑纹里藏蜜甜' },
-                { time: 24.70, text: '寒夜等候路灯前' },
-                { time: 28.00, text: '肩头落满薄霜寒' },
-                { time: 31.30, text: '奔波半生未偷闲' },
-                { time: 34.60, text: '扛起全家四季安' },
-                { time: 37.90, text: '今朝生辰许小心愿' },
-                { time: 41.20, text: '岁岁常相见' },
-                { time: 45.80, text: '感恩暖阳 是您温暖双肩' },
-                { time: 49.40, text: '遮过风雨 护我岁岁平安' },
-                { time: 53.00, text: '人间万般温柔 皆出自您眉眼' },
-                { time: 56.60, text: '余生换我 伴您朝夕三餐' },
-                { time: 61.30, text: '感恩暖阳 予我岁岁心安' },
-                { time: 64.90, text: '时光慢些 留住您的容颜' },
-                { time: 68.50, text: '从前您撑天地 如今我来分担' },
-                { time: 72.10, text: '岁岁生辰 暖意永不消散' },
-                { time: 76.70, text: '晨光爬过粥锅沿' },
-                { time: 80.00, text: '您擦胡茬笑眼弯' },
-                { time: 83.20, text: '公文包挂门把边' },
-                { time: 86.50, text: '喊我快趁热添饭' },
-                { time: 89.80, text: '阳光绕着您转圈圈' },
-                { time: 93.10, text: '笑纹里藏蜜甜' },
-                { time: 97.70, text: '感恩暖阳 是您温暖双肩' },
-                { time: 101.30, text: '遮过风雨 护我岁岁平安' },
-                { time: 104.90, text: '人间万般温柔 皆出自您眉眼' },
-                { time: 108.50, text: '余生换我 伴您朝夕三餐' },
-                { time: 113.20, text: '感恩暖阳 予我岁岁心安' },
-                { time: 116.80, text: '时光慢些 留住您的容颜' },
-                { time: 120.40, text: '从前您撑天地 如今我来分担' },
-                { time: 124.00, text: '岁岁生辰 暖意永不消散' },
-                { time: 150.00, text: '（尾奏纯音乐）' },
-                { time: 165.00, text: '歌曲结束' }
-            ];
-            let currentLyricIdx = -1;
 
-            // ========== 1. 更新 3 行歌词 ==========
-            function updateLyrics(currentTime) {
-                if (lyricsData.length === 0) return;
-                let activeIdx = 0;
-                for (let i = 0; i < lyricsData.length; i++) {
-                    if (currentTime >= lyricsData[i].time) activeIdx = i;
-                }
-                if (activeIdx !== currentLyricIdx) {
-                    currentLyricIdx = activeIdx;
-                    // 当前句
-                    lrcCurrent.textContent = lyricsData[activeIdx].text;
-                    // 上一句
-                    if (activeIdx > 0) lrcPrev.textContent = lyricsData[activeIdx - 1].text;
-                    else lrcPrev.textContent = '';
-                    // 下一句
-                    if (activeIdx < lyricsData.length - 1) lrcNext.textContent = lyricsData[activeIdx + 1].text;
-                    else lrcNext.textContent = '';
-                }
-            }
-
-            // ========== 2. 翻页打字逻辑 ==========
+            // ========== 1. 翻页打字逻辑 ==========
             function typeWriter(element, text, index = 0, callback) {
                 if (index < text.length) {
                     element.textContent += text[index];
@@ -407,7 +313,7 @@
                 }
             });
 
-            // ========== 3. 信封与音乐逻辑 ==========
+            // ========== 2. 信封与音乐逻辑 ==========
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
@@ -463,7 +369,7 @@
             audioBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleAudio(); });
 
             bgAudio.addEventListener('timeupdate', () => {
-                if (isOpen) updateLyrics(bgAudio.currentTime);
+                // 歌词同步逻辑已删除，只保留进度条更新
                 if (bgAudio.duration && isFinite(bgAudio.duration)) {
                     progressFill.style.width = Math.min(100, (bgAudio.currentTime / bgAudio.duration) * 100) + '%';
                 }
