@@ -47,10 +47,13 @@
             position: relative; z-index: 1;
         }
 
-        /* ==================== 纯CSS信封 ==================== */
+        /* ==================== 纯CSS信封（已按你的要求删改） ==================== */
         .envelope-wrapper {
             position: relative; width: 320px; max-width: 85vw; height: 220px;
             cursor: pointer; transition: opacity 0.5s ease; animation: gentleFloat 4s ease-in-out infinite;
+            /* 防止信封盖和信封底产生空隙 */
+            background-color: #ebd6b0;
+            border-radius: 6px; 
         }
         @keyframes gentleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .envelope-wrapper.envelope-hidden { display: none !important; }
@@ -58,26 +61,22 @@
         .env-body {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
             background: linear-gradient(135deg, #ebd6b0 0%, #dab88b 100%);
-            border-radius: 6px; box-shadow: 0 8px 28px rgba(0,0,0,0.14); z-index: 3;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.14); z-index: 3;
             display: flex; align-items: center; justify-content: center;
         }
         .env-body::after { content: '致·亲爱的爸爸'; color: #5a3f28; font-size: 1.4rem; font-weight: bold; letter-spacing: 0.08em; opacity: 0.9; }
+        
         .env-flap {
             position: absolute; top: 0; left: 0; width: 100%; height: 48%;
             background: linear-gradient(180deg, #f3e6d2 0%, #e8d5b5 15%, #dfcaa6 40%, #d9c29d 65%, #dcc7a4 100%);
-            clip-path: polygon(0 0, 50% 100%, 100% 0); z-index: 6; transform-origin: top center;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            z-index: 6; transform-origin: top center;
             transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1); backface-visibility: hidden;
+            /* 已删除区域1：右上角生日快乐邮戳 */
         }
-        .env-flap::after { content: '生日快乐'; position: absolute; top: 10px; right: 10px; border: 1.5px dashed #c0392b; padding: 2px 5px; font-size: 0.6rem; color: #c0392b; background: #fcf6e7; border-radius: 2px; transform: rotate(8deg); }
         .envelope-wrapper.flap-open .env-flap { transform: rotateX(-180deg); opacity: 0; }
-        .env-seal {
-            position: absolute; top: 56%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px;
-            background: radial-gradient(ellipse at 35% 30%, #e74c3c 0%, #c0392b 40%, #8b1a1a 100%);
-            border-radius: 50%; z-index: 7; pointer-events: none; box-shadow: 0 3px 8px rgba(0,0,0,0.28); transition: all 0.5s ease;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .env-seal::before { content: '♥'; font-size: 0.8rem; color: rgba(255,255,255,0.7); }
-        .envelope-wrapper.flap-open .env-seal { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+
+        /* 已删除区域3：红色的火漆印章和红心 */
 
         /* ==================== 白卡片设计 ==================== */
         .card-wrapper { display: none; width: 340px; max-width: 95vw; }
@@ -117,16 +116,8 @@
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
 
-        /* ==================== 新增：翻页提示 ==================== */
-        .tap-hint {
-            text-align: center;
-            font-size: 0.8rem;
-            color: rgba(140, 110, 80, 0.5);
-            font-family: 'KaiTi', 'STKaiti', serif;
-            padding-top: 12px; /* 与音乐控制条间隔 */
-            padding-bottom: 2px;
-            letter-spacing: 0.1em;
-        }
+        /* 翻页提示 */
+        .tap-hint { text-align: center; font-size: 0.8rem; color: rgba(140, 110, 80, 0.5); font-family: 'KaiTi', 'STKaiti', serif; padding-top: 12px; padding-bottom: 2px; letter-spacing: 0.1em; }
 
         .hint { margin-top: 20px; font-size: 0.8rem; color: rgba(140,110,80,0.55); letter-spacing: 0.06em; animation: hintPulse 2.2s infinite ease-in-out; }
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
@@ -190,10 +181,10 @@
     </div>
 
     <div class="scene">
+        <!-- 已删除印章的纯CSS信封 -->
         <div class="envelope-wrapper" id="envelopeWrapper">
             <div class="env-body"></div>
             <div class="env-flap" id="envFlap"></div>
-            <div class="env-seal" id="envSeal"></div>
         </div>
 
         <div class="card-wrapper" id="cardWrapper">
@@ -237,7 +228,6 @@
                     </div>
                 </div>
 
-                <!-- 新增：点击屏幕翻页提示 -->
                 <div class="tap-hint">点击屏幕翻页 🎈</div>
             </div>
         </div>
@@ -258,7 +248,6 @@
             const audioBtn = document.getElementById('audioBtn');
             const progressFill = document.getElementById('progressFill');
 
-            // 弹窗元素
             const modalOverlay = document.getElementById('modalOverlay');
             const modalCloseBtn = document.getElementById('modalCloseBtn');
 
@@ -266,7 +255,7 @@
             let isTyping = false;
             let isOpen = false, isAnimating = false;
 
-            // ========== 1. 翻页打字逻辑 ==========
+            // 打字动画
             function typeWriter(element, text, index = 0, callback) {
                 if (index < text.length) {
                     element.textContent += text[index];
@@ -297,7 +286,6 @@
                 const nextPage = document.querySelector(`.page:nth-child(${currentPageIndex + 2})`);
 
                 if (currentPageIndex === 3) {
-                    // ========== 触发结束弹窗 ==========
                     modalOverlay.style.display = 'flex';
                     
                     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -317,17 +305,9 @@
                 }
             }
 
-            // 弹窗关闭事件
-            modalCloseBtn.addEventListener('click', () => {
-                modalOverlay.style.display = 'none';
-            });
-            modalOverlay.addEventListener('click', (e) => {
-                if (e.target === modalOverlay) {
-                    modalOverlay.style.display = 'none';
-                }
-            });
+            modalCloseBtn.addEventListener('click', () => { modalOverlay.style.display = 'none'; });
+            modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.style.display = 'none'; });
 
-            // ========== 2. 信封与音乐逻辑 ==========
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
                 isAnimating = true; isOpen = true;
@@ -383,7 +363,6 @@
             audioBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleAudio(); });
 
             bgAudio.addEventListener('timeupdate', () => {
-                // 歌词同步逻辑已删除，只保留进度条更新
                 if (bgAudio.duration && isFinite(bgAudio.duration)) {
                     progressFill.style.width = Math.min(100, (bgAudio.currentTime / bgAudio.duration) * 100) + '%';
                 }
