@@ -46,40 +46,46 @@
             position: relative; z-index: 1;
         }
 
-        /* ==================== 核心修复：加了#e8cea7背景底色，抹平像素缝隙 ==================== */
+        /* ==================== 创新平角信封（彻底告别三角毛边） ==================== */
         .envelope-wrapper {
             position: relative; width: 320px; max-width: 85vw; height: 220px;
             cursor: pointer; transition: opacity 0.5s ease; animation: gentleFloat 4s ease-in-out infinite;
-            border-radius: 0 0 8px 8px;
-            /* 加上这行背景色，彻底“吃掉”两边的白色缝隙 */
             background-color: #e8cea7; 
+            border-radius: 0 0 8px 8px; /* 底部圆角 */
         }
         @keyframes gentleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .envelope-wrapper.envelope-hidden { display: none !important; }
 
+        /* 信封下半部分（平直顶部） */
         .env-body {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 55%; 
             background: linear-gradient(180deg, #e8cea7 0%, #dcc19a 100%);
             box-shadow: 0 8px 28px rgba(0,0,0,0.14); z-index: 3;
             display: flex; align-items: center; justify-content: center;
+            border-radius: 0 0 8px 8px;
         }
-        .env-body::after { content: '致·亲爱的爸爸'; color: #5a3f28; font-size: 1.4rem; font-weight: bold; letter-spacing: 0.08em; opacity: 0.9; margin-top: 12px;}
+        .env-body::after { content: '致·亲爱的爸爸'; color: #5a3f28; font-size: 1.4rem; font-weight: bold; letter-spacing: 0.08em; opacity: 0.9; margin-top: 16px; /* 居中微调 */}
         
+        /* 信封上半部分（平顶盖） */
         .env-flap {
-            position: absolute; top: 0; left: 0; width: 100%; height: 48%;
-            background: linear-gradient(180deg, #f5e9d4 0%, #edd6b3 30%, #e8cea7 100%);
-            /* 经典的原始裁剪 */
-            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            position: absolute; top: 0; left: 0; width: 100%; height: 45%;
+            background: linear-gradient(180deg, #f5e9d4 0%, #e8cea7 100%);
+            /* 核心改变：去掉了 clip-path，变成了平整的翻盖 */
+            border-radius: 8px 8px 0 0; /* 顶部是圆角，底部是平直 */
             z-index: 6; transform-origin: top center;
             transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.1, 1); backface-visibility: hidden;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.06));
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
         }
-        .envelope-wrapper.flap-open .env-flap { transform: rotateX(-180deg); opacity: 0 !important; z-index: -1 !important; }
+        .envelope-wrapper.flap-open .env-flap { 
+            transform: rotateX(-180deg); 
+            opacity: 0 !important; 
+            z-index: -1 !important; 
+        }
 
-        /* 新增加的“封”字印章 */
+        /* 贴合平盖折痕的“封”字印章 */
         .env-seal-stamp {
             position: absolute;
-            top: 47%; left: 50%;
+            top: 44.5%; left: 50%; /* 刚好贴在折痕处 */
             transform: translate(-50%, -50%) rotate(-12deg);
             width: 34px; height: 34px;
             background-color: #b8302a; color: #fefcfb;
@@ -103,7 +109,7 @@
         .env-seal-stamp.shake { animation: sealShake 0.3s ease-in-out; }
         .env-seal-stamp.vanished { opacity: 0; transform: translate(-20%, -100%) rotate(40deg) scale(0.2); pointer-events: none; }
 
-        /* ==================== 白卡片设计（略） ==================== */
+        /* ==================== 白卡片设计 ==================== */
         .card-wrapper { display: none; width: 340px; max-width: 95vw; }
         .card-wrapper.visible { display: flex; animation: cardAppear 0.5s ease-out forwards; }
         @keyframes cardAppear { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
@@ -119,16 +125,13 @@
         .text-line { font-size: 1.3rem; line-height: 2.2; color: #3a2f28; font-family: 'KaiTi', 'STKaiti', serif; opacity: 0; letter-spacing: 0.06em; text-align: left; display: inline-block; border-bottom: 1px solid rgba(180, 150, 120, 0.2); padding-bottom: 2px; width: 100%; }
         .text-line.sign { border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 12px; letter-spacing: 0.08em; }
         .text-line.hint-tip { border-bottom: none; text-align: center; color: rgba(140,110,80,0.45); font-size: 0.8rem; padding-top: 10px; }
-
         .card-footer { text-align: center; padding-top: 12px; display: flex; justify-content: center; }
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
         .audio-img-btn { width: 36px; height: 36px; object-fit: contain; cursor: pointer; transition: transform 0.2s ease; }
         .audio-img-btn:active { transform: scale(0.9); }
         .progress-track { width: 60px; height: 3px; background: rgba(180,150,120,0.2); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: #c0392b; width: 0%; transition: width 0.3s linear; }
-
         .tap-hint { text-align: center; font-size: 0.8rem; color: rgba(140, 110, 80, 0.5); font-family: 'KaiTi', 'STKaiti', serif; padding-top: 12px; padding-bottom: 2px; letter-spacing: 0.1em; }
-
         .hint { margin-top: 20px; font-size: 0.8rem; color: rgba(140,110,80,0.55); letter-spacing: 0.06em; animation: hintPulse 2.2s infinite ease-in-out; }
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
         .hint.hidden { visibility: hidden; }
@@ -174,6 +177,7 @@
     </div>
 
     <div class="scene">
+        <!-- 新版平角信封 -->
         <div class="envelope-wrapper" id="envelopeWrapper">
             <div class="env-body"></div>
             <div class="env-flap" id="envFlap"></div>
