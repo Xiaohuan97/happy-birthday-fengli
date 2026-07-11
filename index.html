@@ -47,36 +47,72 @@
             position: relative; z-index: 1;
         }
 
-        /* ==================== 纯CSS信封（已按你的要求删改） ==================== */
+        /* ==================== 纯CSS信封（改造成完美尖角+折痕阴影） ==================== */
         .envelope-wrapper {
             position: relative; width: 320px; max-width: 85vw; height: 220px;
             cursor: pointer; transition: opacity 0.5s ease; animation: gentleFloat 4s ease-in-out infinite;
-            /* 防止信封盖和信封底产生空隙 */
-            background-color: #ebd6b0;
-            border-radius: 6px; 
+            /* 核心修复：去掉外层圆角，让顶角变成完美尖角 */
+            border-radius: 0; 
         }
         @keyframes gentleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .envelope-wrapper.envelope-hidden { display: none !important; }
 
         .env-body {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
-            background: linear-gradient(135deg, #ebd6b0 0%, #dab88b 100%);
+            background: linear-gradient(180deg, #e8cea7 0%, #dcc19a 100%);
             box-shadow: 0 8px 28px rgba(0,0,0,0.14); z-index: 3;
             display: flex; align-items: center; justify-content: center;
+            /* 让信封下半截保留圆角 */
+            border-radius: 0 0 8px 8px;
         }
-        .env-body::after { content: '致·亲爱的爸爸'; color: #5a3f28; font-size: 1.4rem; font-weight: bold; letter-spacing: 0.08em; opacity: 0.9; }
+        .env-body::after { content: '致·亲爱的爸爸'; color: #5a3f28; font-size: 1.4rem; font-weight: bold; letter-spacing: 0.08em; opacity: 0.9; margin-top: 12px;}
         
         .env-flap {
             position: absolute; top: 0; left: 0; width: 100%; height: 48%;
-            background: linear-gradient(180deg, #f3e6d2 0%, #e8d5b5 15%, #dfcaa6 40%, #d9c29d 65%, #dcc7a4 100%);
+            background: linear-gradient(180deg, #f5e9d4 0%, #edd6b3 30%, #e8cea7 100%);
             clip-path: polygon(0 0, 50% 100%, 100% 0);
             z-index: 6; transform-origin: top center;
-            transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.1, 1); backface-visibility: hidden;
-            /* 已删除区域1：右上角生日快乐邮戳 */
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.1, 1); backface-visibility: hidden;
+            /* 修复：在封盖处加上微弱的阴影，模拟纸张折痕 */
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.06));
         }
         .envelope-wrapper.flap-open .env-flap { transform: rotateX(-180deg); opacity: 0; }
 
-        /* 已删除区域3：红色的火漆印章和红心 */
+        /* 带有“撕开”动画的 封 字印章 */
+        .env-seal-stamp {
+            position: absolute;
+            top: 47%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-12deg);
+            width: 34px; height: 34px;
+            background-color: #b8302a; /* 复古红 */
+            color: #fefcfb;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'KaiTi', 'STKaiti', serif;
+            font-weight: bold; font-size: 1.2rem;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 7; pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        /* 震动动画 */
+        @keyframes sealShake {
+            0% { transform: translate(-50%, -50%) rotate(-12deg); }
+            20% { transform: translate(-55%, -45%) rotate(-25deg); }
+            40% { transform: translate(-45%, -55%) rotate(-2deg); }
+            60% { transform: translate(-55%, -45%) rotate(-18deg); }
+            80% { transform: translate(-45%, -55%) rotate(-5deg); }
+            100% { transform: translate(-50%, -50%) rotate(-12deg); }
+        }
+        .env-seal-stamp.shake {
+            animation: sealShake 0.3s ease-in-out;
+        }
+        /* 消失动画（被扯走） */
+        .env-seal-stamp.vanished {
+            opacity: 0;
+            transform: translate(-20%, -100%) rotate(40deg) scale(0.2);
+            pointer-events: none;
+        }
 
         /* ==================== 白卡片设计 ==================== */
         .card-wrapper { display: none; width: 340px; max-width: 95vw; }
@@ -153,6 +189,7 @@
             .card-content { min-height: 160px; }
             .text-line { font-size: 1.1rem; line-height: 2; }
             .env-body::after { font-size: 1.1rem; }
+            .env-seal-stamp { width: 28px; height: 28px; font-size: 1rem; }
             .modal-box { padding: 20px; width: 85vw; }
             .modal-title { font-size: 1.2rem; }
             .modal-content { font-size: 1rem; }
@@ -181,10 +218,11 @@
     </div>
 
     <div class="scene">
-        <!-- 已删除印章的纯CSS信封 -->
+        <!-- 尖角信封（已修复颜色断层+折痕阴影） -->
         <div class="envelope-wrapper" id="envelopeWrapper">
             <div class="env-body"></div>
             <div class="env-flap" id="envFlap"></div>
+            <div class="env-seal-stamp" id="envSealStamp">封</div>
         </div>
 
         <div class="card-wrapper" id="cardWrapper">
@@ -241,6 +279,8 @@
         (function() {
             const cakeBg = document.getElementById('cakeBg');
             const envelopeWrapper = document.getElementById('envelopeWrapper');
+            const envelopeFlap = document.getElementById('envFlap');
+            const envSealStamp = document.getElementById('envSealStamp');
             const cardWrapper = document.getElementById('cardWrapper');
             const cardContent = document.getElementById('cardContent');
             const hintText = document.getElementById('hintText');
@@ -308,11 +348,28 @@
             modalCloseBtn.addEventListener('click', () => { modalOverlay.style.display = 'none'; });
             modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.style.display = 'none'; });
 
+            // 撕封条 + 开信封动画
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
-                isAnimating = true; isOpen = true;
-                envelopeWrapper.classList.add('flap-open');
-                tryPlayMusic();
+                isAnimating = true;
+                isOpen = true;
+
+                // 1. 开始震动（撕封条）
+                envSealStamp.classList.remove('shake', 'vanished');
+                envSealStamp.classList.add('shake');
+
+                // 2. 0.3秒后，封条被彻底撕走消失
+                setTimeout(() => {
+                    envSealStamp.classList.remove('shake');
+                    envSealStamp.classList.add('vanished');
+                }, 300);
+
+                // 3. 0.8秒后，信封盖翻开
+                setTimeout(() => {
+                    envelopeWrapper.classList.add('flap-open');
+                }, 800);
+
+                // 4. 1.4秒后，隐藏信封，弹出贺卡、音乐、蛋糕
                 setTimeout(() => {
                     envelopeWrapper.style.display = 'none'; 
                     cardWrapper.classList.add('visible');
@@ -320,8 +377,9 @@
                     isTyping = true;
                     triggerPageAnimation(document.querySelector('.page:first-child'));
                     cakeBg.classList.add('active');
+                    tryPlayMusic();
                     isAnimating = false;
-                }, 700);
+                }, 1400);
             }
 
             function closeCard() {
@@ -331,6 +389,8 @@
                 cardWrapper.classList.remove('visible');
                 envelopeWrapper.style.display = ''; 
                 envelopeWrapper.classList.remove('flap-open');
+                // 重置封条位置，以便下次打开
+                envSealStamp.classList.remove('shake', 'vanished');
                 hintText.classList.remove('hidden');
                 cakeBg.classList.remove('active');
                 currentPageIndex = 0;
