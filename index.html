@@ -46,7 +46,7 @@
             position: relative; z-index: 1;
         }
 
-        /* ==================== 平角信封 ==================== */
+        /* 平角信封 */
         .envelope-wrapper {
             position: relative; width: 320px; max-width: 85vw; height: 220px;
             cursor: pointer; transition: opacity 0.5s ease; animation: gentleFloat 4s ease-in-out infinite;
@@ -105,7 +105,7 @@
         .env-seal-stamp.shake { animation: sealShake 0.3s ease-in-out; }
         .env-seal-stamp.vanished { opacity: 0; transform: translate(-20%, -100%) rotate(40deg) scale(0.2); pointer-events: none; }
 
-        /* ==================== 白卡片 ==================== */
+        /* 白卡片 */
         .card-wrapper { display: none; width: 340px; max-width: 95vw; }
         .card-wrapper.visible { display: flex; animation: cardAppear 0.5s ease-out forwards; }
         @keyframes cardAppear { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
@@ -121,16 +121,6 @@
         .text-line { font-size: 1.3rem; line-height: 2.2; color: #3a2f28; font-family: 'KaiTi', 'STKaiti', serif; opacity: 0; letter-spacing: 0.06em; text-align: left; display: inline-block; border-bottom: 1px solid rgba(180, 150, 120, 0.2); padding-bottom: 2px; width: 100%; }
         .text-line.sign { border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 12px; letter-spacing: 0.08em; }
         .text-line.hint-tip { border-bottom: none; text-align: center; color: rgba(140,110,80,0.45); font-size: 0.8rem; padding-top: 10px; }
-
-        /* 歌词区域 */
-        .lyrics-container {
-            position: relative; z-index: 2; margin-top: 8px; padding: 8px 4px;
-            min-height: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: rgba(255, 248, 235, 0.5); border-radius: 8px; overflow: hidden;
-        }
-        .lrc-line { text-align: center; width: 100%; transition: all 0.4s ease; line-height: 1.6; }
-        .lrc-prev, .lrc-next { font-size: 0.85rem; color: #a39182; opacity: 0.4; }
-        .lrc-current { font-size: 1.2rem; color: #c0392b; font-weight: 700; opacity: 1; text-shadow: 0 1px 2px rgba(255,255,255,0.8); }
 
         .card-footer { text-align: center; padding-top: 12px; display: flex; justify-content: center; }
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
@@ -221,13 +211,6 @@
                     </div>
                 </div>
 
-                <!-- 新歌歌词显示区 -->
-                <div class="lyrics-container" id="lyricsContainer">
-                    <div class="lrc-line lrc-prev" id="lrcPrev"></div>
-                    <div class="lrc-line lrc-current" id="lrcCurrent">🎵 点击信封开启 🎵</div>
-                    <div class="lrc-line lrc-next" id="lrcNext"></div>
-                </div>
-
                 <div class="card-footer">
                     <div class="audio-bar">
                         <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
@@ -254,68 +237,11 @@
             const audioBtn = document.getElementById('audioBtn');
             const progressFill = document.getElementById('progressFill');
 
-            // 歌词元素
-            const lrcPrev = document.getElementById('lrcPrev');
-            const lrcCurrent = document.getElementById('lrcCurrent');
-            const lrcNext = document.getElementById('lrcNext');
-
             const modalOverlay = document.getElementById('modalOverlay');
             const modalCloseBtn = document.getElementById('modalCloseBtn');
 
             let currentPageIndex = 0, isTyping = false, isOpen = false, isAnimating = false;
-            
-            // ========== 新歌歌词数据（直接取自你的SRT，帮你修正了错别字） ==========
-            const lyricsData = [
-                { time: 0.00, text: '🎵 晨光爬过粥锅沿 🎵' },
-                { time: 3.68, text: '晨光爬过粥锅沿' },
-                { time: 7.92, text: '您擦胡茬笑眼弯' },
-                { time: 12.24, text: '公文包挂门把边' },
-                { time: 16.88, text: '喊我快趁热添饭' },
-                { time: 19.84, text: '阳光绕着您转圈圈' },
-                { time: 24.64, text: '笑纹里藏蜜甜' },
-                { time: 45.76, text: '今' },
-                { time: 49.24, text: '天就面' },
-                { time: 72.76, text: '旧风筝线在你手' },
-                { time: 77.40, text: '带我跑过巷口' },
-                { time: 81.40, text: '如今牵我走街头' },
-                { time: 86.00, text: '脚步轻了被围攻' },
-                { time: 91.16, text: '阳光铺满您的肩' },
-                { time: 93.84, text: '烦恼全被风吹远' },
-                { time: 96.44, text: '嗯嗯' },
-                { time: 97.92, text: '再撒个娇曾迷恋' },
-                { time: 100.12, text: '祝爸爸身体健康 永远笑开颜' },
-                { time: 106.32, text: '阳光绕着您转圈圈' },
-                { time: 111.16, text: '笑纹里藏蜜甜' },
-                { time: 114.88, text: '今天我要成您支柱' },
-                { time: 119.80, text: '爸爸岁岁安康' },
-                { time: 123.68, text: '阳光绕着您转圈圈' },
-                { time: 128.48, text: '笑纹里藏里甜' },
-                { time: 132.52, text: '再撒个娇曾迷恋' },
-                { time: 135.80, text: '永远笑开颜' }
-            ];
-            let currentLyricIdx = -1;
 
-            // ========== 更新 3 行歌词 ==========
-            function updateLyrics(currentTime) {
-                if (lyricsData.length === 0) return;
-                let activeIdx = 0;
-                for (let i = 0; i < lyricsData.length; i++) {
-                    if (currentTime >= lyricsData[i].time) activeIdx = i;
-                }
-                if (activeIdx !== currentLyricIdx) {
-                    currentLyricIdx = activeIdx;
-                    // 当前句
-                    lrcCurrent.textContent = lyricsData[activeIdx].text;
-                    // 上一句
-                    if (activeIdx > 0) lrcPrev.textContent = lyricsData[activeIdx - 1].text;
-                    else lrcPrev.textContent = '';
-                    // 下一句
-                    if (activeIdx < lyricsData.length - 1) lrcNext.textContent = lyricsData[activeIdx + 1].text;
-                    else lrcNext.textContent = '';
-                }
-            }
-
-            // ========== 翻页打字逻辑 ==========
             function typeWriter(element, text, index = 0, callback) {
                 if (index < text.length) {
                     element.textContent += text[index];
@@ -425,7 +351,6 @@
             audioBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleAudio(); });
 
             bgAudio.addEventListener('timeupdate', () => {
-                if (isOpen) updateLyrics(bgAudio.currentTime);
                 if (bgAudio.duration && isFinite(bgAudio.duration)) {
                     progressFill.style.width = Math.min(100, (bgAudio.currentTime / bgAudio.duration) * 100) + '%';
                 }
