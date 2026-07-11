@@ -27,7 +27,6 @@
             background-size: contain; background-position: center; background-repeat: no-repeat;
             animation: cakeFall 10s linear infinite; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.1)); 
         }
-        /* ...蛋糕动画代码省略，保持不变... */
         .cake-bg span:nth-child(1) { left: 10%; width: 25px; height: 25px; background-image: url('cake1.png'); animation-delay: 0s; animation-duration: 12s; }
         .cake-bg span:nth-child(2) { left: 25%; width: 40px; height: 40px; background-image: url('cake2.png'); animation-delay: 2s; animation-duration: 9s; }
         .cake-bg span:nth-child(3) { left: 40%; width: 35px; height: 35px; background-image: url('cake3.png'); animation-delay: 4s; animation-duration: 14s; }
@@ -47,13 +46,13 @@
             position: relative; z-index: 1;
         }
 
-        /* ==================== 纯CSS信封（完美修复两边漏白缺口） ==================== */
+        /* ==================== 核心修复：加了#e8cea7背景底色，抹平像素缝隙 ==================== */
         .envelope-wrapper {
             position: relative; width: 320px; max-width: 85vw; height: 220px;
             cursor: pointer; transition: opacity 0.5s ease; animation: gentleFloat 4s ease-in-out infinite;
-            border-radius: 0 0 8px 8px; /* 下方保留圆角 */
-            /* 核心修复：强制隐藏溢出，把两边超出1%的像素彻底剪裁掉，不留漏白 */
-            overflow: hidden; 
+            border-radius: 0 0 8px 8px;
+            /* 加上这行背景色，彻底“吃掉”两边的白色缝隙 */
+            background-color: #e8cea7; 
         }
         @keyframes gentleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .envelope-wrapper.envelope-hidden { display: none !important; }
@@ -67,21 +66,17 @@
         .env-body::after { content: '致·亲爱的爸爸'; color: #5a3f28; font-size: 1.4rem; font-weight: bold; letter-spacing: 0.08em; opacity: 0.9; margin-top: 12px;}
         
         .env-flap {
-            position: absolute; top: 0; left: -2%; width: 104%; height: 49%; /* 让宽度超出原版2%，再配合 overflow:hidden 完美吃掉锯齿 */
+            position: absolute; top: 0; left: 0; width: 100%; height: 48%;
             background: linear-gradient(180deg, #f5e9d4 0%, #edd6b3 30%, #e8cea7 100%);
-            /* 核心修复：两边向外延展1%，让白色毛边彻底消失 */
-            clip-path: polygon(-2% 0, 50% 100%, 102% 0);
+            /* 经典的原始裁剪 */
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
             z-index: 6; transform-origin: top center;
             transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.1, 1); backface-visibility: hidden;
             filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.06));
         }
-        /* 一旦翻开，强制让它彻底隐形 */
-        .envelope-wrapper.flap-open .env-flap { 
-            transform: rotateX(-180deg); 
-            opacity: 0 !important; 
-            z-index: -1 !important; 
-        }
+        .envelope-wrapper.flap-open .env-flap { transform: rotateX(-180deg); opacity: 0 !important; z-index: -1 !important; }
 
+        /* 新增加的“封”字印章 */
         .env-seal-stamp {
             position: absolute;
             top: 47%; left: 50%;
@@ -106,40 +101,25 @@
             100% { transform: translate(-50%, -50%) rotate(-12deg); }
         }
         .env-seal-stamp.shake { animation: sealShake 0.3s ease-in-out; }
-        .env-seal-stamp.vanished {
-            opacity: 0; transform: translate(-20%, -100%) rotate(40deg) scale(0.2); pointer-events: none;
-        }
+        .env-seal-stamp.vanished { opacity: 0; transform: translate(-20%, -100%) rotate(40deg) scale(0.2); pointer-events: none; }
 
-        /* ==================== 白卡片设计 ==================== */
+        /* ==================== 白卡片设计（略） ==================== */
         .card-wrapper { display: none; width: 340px; max-width: 95vw; }
         .card-wrapper.visible { display: flex; animation: cardAppear 0.5s ease-out forwards; }
         @keyframes cardAppear { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-
-        .card {
-            background: #fefcfb; border: 1px solid rgba(220, 200, 180, 0.3); border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); width: 100%; display: flex; flex-direction: column;
-            padding: 24px 16px 14px; position: relative;
-        }
-
+        .card { background: #fefcfb; border: 1px solid rgba(220, 200, 180, 0.3); border-radius: 16px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); width: 100%; display: flex; flex-direction: column; padding: 24px 16px 14px; position: relative; }
         .card-header { text-align: center; padding-bottom: 16px; display: flex; flex-direction: column; align-items: center; }
         .card-header .title { font-size: 2.2rem; color: #c0392b; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 8px; }
         .card-header .header-wish { font-size: 1.0rem; color: #a64e3b; margin-bottom: 8px; letter-spacing: 0.06em; text-align: center; }
         .card-header .subtitle { font-size: 0.85rem; color: #b8862d; letter-spacing: 0.1em; }
-
         .card-content { position: relative; min-height: 180px; cursor: pointer; }
         .page { display: none; width: 100%; animation: pageFadeIn 0.4s ease-out forwards; }
         .page.active { display: flex; flex-direction: column; gap: 4px; }
         @keyframes pageFadeIn { 0% { opacity: 0; transform: translateX(8px); } 100% { opacity: 1; transform: translateX(0); } }
-
-        .text-line {
-            font-size: 1.3rem; line-height: 2.2; color: #3a2f28; font-family: 'KaiTi', 'STKaiti', serif; opacity: 0;
-            letter-spacing: 0.06em; text-align: left; display: inline-block;
-            border-bottom: 1px solid rgba(180, 150, 120, 0.2); padding-bottom: 2px; width: 100%;
-        }
+        .text-line { font-size: 1.3rem; line-height: 2.2; color: #3a2f28; font-family: 'KaiTi', 'STKaiti', serif; opacity: 0; letter-spacing: 0.06em; text-align: left; display: inline-block; border-bottom: 1px solid rgba(180, 150, 120, 0.2); padding-bottom: 2px; width: 100%; }
         .text-line.sign { border-bottom: none; text-align: right; color: #c0392b; font-size: 1.1rem; padding-top: 12px; letter-spacing: 0.08em; }
         .text-line.hint-tip { border-bottom: none; text-align: center; color: rgba(140,110,80,0.45); font-size: 0.8rem; padding-top: 10px; }
 
-        /* 底部音乐控制 */
         .card-footer { text-align: center; padding-top: 12px; display: flex; justify-content: center; }
         .audio-bar { display: flex; align-items: center; justify-content: center; gap: 12px; }
         .audio-img-btn { width: 36px; height: 36px; object-fit: contain; cursor: pointer; transition: transform 0.2s ease; }
@@ -153,26 +133,13 @@
         @keyframes hintPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
         .hint.hidden { visibility: hidden; }
 
-        /* 结束弹窗 */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px);
-            display: none; justify-content: center; align-items: center; z-index: 99999;
-            animation: modalFadeIn 0.5s ease;
-        }
+        /* 弹窗 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px); display: none; justify-content: center; align-items: center; z-index: 99999; animation: modalFadeIn 0.5s ease; }
         @keyframes modalFadeIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
-        .modal-box {
-            background: #ffffff; border-radius: 20px; padding: 30px; max-width: 85vw; width: 340px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2); text-align: center;
-            font-family: 'KaiTi', 'STKaiti', serif;
-        }
+        .modal-box { background: #ffffff; border-radius: 20px; padding: 30px; max-width: 85vw; width: 340px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); text-align: center; font-family: 'KaiTi', 'STKaiti', serif; }
         .modal-title { font-size: 1.5rem; color: #c0392b; margin-bottom: 16px; letter-spacing: 0.05em; }
         .modal-content { font-size: 1.15rem; color: #3a2f28; line-height: 2; margin-bottom: 24px; }
-        .modal-close-btn {
-            background: #c0392b; color: #fff; border: none; padding: 10px 30px;
-            border-radius: 30px; font-size: 1rem; cursor: pointer; transition: 0.2s;
-            font-family: 'KaiTi', 'STKaiti', serif; letter-spacing: 0.05em;
-        }
+        .modal-close-btn { background: #c0392b; color: #fff; border: none; padding: 10px 30px; border-radius: 30px; font-size: 1rem; cursor: pointer; transition: 0.2s; font-family: 'KaiTi', 'STKaiti', serif; letter-spacing: 0.05em; }
         .modal-close-btn:active { transform: scale(0.95); background: #a93226; }
 
         @media (max-width: 500px) {
@@ -191,28 +158,22 @@
     </style>
 </head>
 <body>
-    <!-- 蛋糕掉落层 -->
     <div class="cake-bg" id="cakeBg">
         <span></span><span></span><span></span><span></span>
         <span></span><span></span><span></span><span></span>
     </div>
 
-    <!-- 弹窗层 -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box">
             <div class="modal-title">❤️ 生日快乐，爸爸！</div>
             <div class="modal-content">
-                亲爱的爸爸，<br>
-                您永远是我心中最坚实的依靠。<br>
-                愿您身体健康，天天开心！<br>
-                —— 永远爱您的孩子
+                亲爱的爸爸，<br>您永远是我心中最坚实的依靠。<br>愿您身体健康，天天开心！<br>—— 永远爱您的孩子
             </div>
             <button class="modal-close-btn" id="modalCloseBtn">我知道了</button>
         </div>
     </div>
 
     <div class="scene">
-        <!-- 完美尖角信封（已修复锯齿漏白） -->
         <div class="envelope-wrapper" id="envelopeWrapper">
             <div class="env-body"></div>
             <div class="env-flap" id="envFlap"></div>
@@ -226,7 +187,6 @@
                     <div class="header-wish">❤ 亲爱的爸爸，儿女祝您生日快乐 ❤</div>
                     <div class="subtitle">—— 致我最敬爱的爸爸 ——</div>
                 </div>
-
                 <div class="card-content" id="cardContent">
                     <div class="page active">
                         <div class="text-line" data-text="亲爱的爸爸，"> </div>
@@ -251,19 +211,15 @@
                         <div class="text-line hint-tip">🎉 点击此处重新翻阅</div>
                     </div>
                 </div>
-
-                <!-- 音乐控制区 -->
                 <div class="card-footer">
                     <div class="audio-bar">
                         <img src="play-btn.png" id="audioBtn" class="audio-img-btn" title="播放/暂停背景音乐">
                         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
                     </div>
                 </div>
-
                 <div class="tap-hint">点击屏幕翻页 🎈</div>
             </div>
         </div>
-
         <div class="hint" id="hintText">点击信封打开贺卡</div>
     </div>
 
@@ -273,7 +229,6 @@
         (function() {
             const cakeBg = document.getElementById('cakeBg');
             const envelopeWrapper = document.getElementById('envelopeWrapper');
-            const envelopeFlap = document.getElementById('envFlap');
             const envSealStamp = document.getElementById('envSealStamp');
             const cardWrapper = document.getElementById('cardWrapper');
             const cardContent = document.getElementById('cardContent');
@@ -285,9 +240,7 @@
             const modalOverlay = document.getElementById('modalOverlay');
             const modalCloseBtn = document.getElementById('modalCloseBtn');
 
-            let currentPageIndex = 0;
-            let isTyping = false;
-            let isOpen = false, isAnimating = false;
+            let currentPageIndex = 0, isTyping = false, isOpen = false, isAnimating = false;
 
             function typeWriter(element, text, index = 0, callback) {
                 if (index < text.length) {
@@ -295,16 +248,14 @@
                     let delay = Math.random() * 50 + 30; 
                     setTimeout(() => typeWriter(element, text, index + 1, callback), delay);
                 } else {
-                    element.style.opacity = '1';
-                    if (callback) callback();
+                    element.style.opacity = '1'; if (callback) callback();
                 }
             }
 
             function triggerPageAnimation(pageElement) {
                 const lines = pageElement.querySelectorAll('.text-line[data-text]');
                 lines.forEach((line, index) => {
-                    line.textContent = '';
-                    line.style.opacity = '0';
+                    line.textContent = ''; line.style.opacity = '0';
                     setTimeout(() => {
                         typeWriter(line, line.dataset.text, 0, () => {
                             if(index === lines.length - 1) isTyping = false;
@@ -317,23 +268,18 @@
                 if (isTyping) return;
                 const currentPage = document.querySelector(`.page:nth-child(${currentPageIndex + 1})`);
                 const nextPage = document.querySelector(`.page:nth-child(${currentPageIndex + 2})`);
-
                 if (currentPageIndex === 3) {
                     modalOverlay.style.display = 'flex';
-                    
                     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                     document.querySelector('.page:first-child').classList.add('active');
-                    currentPageIndex = 0;
-                    isTyping = true;
+                    currentPageIndex = 0; isTyping = true;
                     triggerPageAnimation(document.querySelector('.page:first-child'));
                     return;
                 }
-
                 if (currentPage) currentPage.classList.remove('active');
                 if (nextPage) {
                     nextPage.classList.add('active');
-                    isTyping = true;
-                    triggerPageAnimation(nextPage);
+                    isTyping = true; triggerPageAnimation(nextPage);
                     currentPageIndex++;
                 }
             }
@@ -343,21 +289,16 @@
 
             function openEnvelope() {
                 if (isAnimating || isOpen) return;
-                isAnimating = true;
-                isOpen = true;
-
+                isAnimating = true; isOpen = true;
                 envSealStamp.classList.remove('shake', 'vanished');
                 envSealStamp.classList.add('shake');
-
                 setTimeout(() => {
                     envSealStamp.classList.remove('shake');
                     envSealStamp.classList.add('vanished');
                 }, 300);
-
                 setTimeout(() => {
                     envelopeWrapper.classList.add('flap-open');
                 }, 800);
-
                 setTimeout(() => {
                     envelopeWrapper.style.display = 'none'; 
                     cardWrapper.classList.add('visible');
